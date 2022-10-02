@@ -18,5 +18,9 @@ export const defaultTheme = {
   'base-input': '#EDEDED',
   'base-card': '#F3F2F2',
 
+  'red-300': '#F75A68',
+  'red-500': '#AB222E',
+  'red-700': '#7A1921',
+
   'base-background': '#FAFAFA',
 } as const 
