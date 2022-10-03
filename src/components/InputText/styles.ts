@@ -84,6 +84,7 @@ export const ErrorText = styled.span`
 export const ErrorSymbol = styled.span`
   width: 22px;
   height: 22px;
+  margin-right: 2.5rem;
   color: ${props => props.theme["red-500"]}
 `;
 
