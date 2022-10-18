@@ -8,11 +8,14 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogActions from '@mui/material/DialogActions';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
+import Stack from '@mui/material/Stack';
 import { InputText } from '../../components/InputText';
 import { UserPlus } from 'phosphor-react';
-import { RegisterCard, RegisterContainer, Form } from './styles';
 import { useState } from 'react';
 import { api } from '../../services/axios/api';
+
+import { RegisterCard, RegisterContainer, Form, ButtonsGroup, ColorButton } from './styles';
+import theme from '../../styles/themes/theme';
 
 const registerFormSchema = yup.object({
 	name: yup.string().required('Campo obrigatório!'),
@@ -67,8 +70,7 @@ export function Register() {
 				<RegisterCard>
 					<div className='headerGroup'>
 						<span>
-							{' '}
-							<UserPlus size={22} />{' '}
+							<UserPlus size={22} />
 						</span>
 						<div>
 							<h4>Crie sua conta</h4>
@@ -82,33 +84,36 @@ export function Register() {
 					<InputText mask='' type='password' label='Senha' passwordView {...register('password')} error={errors.password?.message} />
 					<InputText mask='' type='password' label='Confirmar senha' passwordView {...register('confirm_password')} error={errors.confirm_password?.message} />
 
-					<div>
-						<Button color='secondary' variant='outlined' onClick={handleClickOpen}>
-							Open alert dialog
-						</Button>
-						<Dialog open={open} onClose={handleClose} aria-labelledby='alert-dialog-title' aria-describedby='alert-dialog-description'>
-							<DialogTitle id='alert-dialog-title'>{'Gostaria de usar uma foto de perfil?'}</DialogTitle>
-							<DialogContent>
-								<DialogContentText id='alert-dialog-description'>
-									<Typography gutterBottom>
-										Como vocês está se registrando agora, só é possível referenciar uma imagem para seu perfil através de algum link de alguma foto sua já existente na Web. Por exemplo:
-										(https://avatars.githubusercontent.com/u/97031798?v=4). Qualquer link válido irá servir para ser sua foto de perfil.
-									</Typography>
-									<Typography gutterBottom>Após concluir seu cadastro, você pode editar seu perfil e então subir uma imagem para usar como foto de perfil.</Typography>
-									<Typography gutterBottom>
-										<InputText mask='' type='link' label='Link para foto de perfil' {...register('avatar')} />
-									</Typography>
-								</DialogContentText>
-								<DialogActions>
-									<Button color='secondary' onClick={handleClose}>
-										Ok
-									</Button>
-								</DialogActions>
-							</DialogContent>
-						</Dialog>
-					</div>
-
-					<button type='submit'> Criar </button>
+					<ButtonsGroup>
+						<Stack direction={'column'} spacing={2}>
+							<Button color='info' variant='contained' onClick={handleClickOpen}>
+								Open alert dialog
+							</Button>
+							<Dialog open={open} onClose={handleClose} aria-labelledby='alert-dialog-title' aria-describedby='alert-dialog-description'>
+								<DialogTitle id='alert-dialog-title'>{'Gostaria de usar uma foto de perfil?'}</DialogTitle>
+								<DialogContent>
+									<DialogContentText id='alert-dialog-description'>
+										<Typography gutterBottom align='left'>
+											Como vocês está se registrando agora, só é possível referenciar uma imagem para seu perfil através de algum link de alguma foto sua já existente na Web. Por exemplo:
+											<i>(https://avatars.githubusercontent.com/u/97031798?v=4).</i> Qualquer link válido irá servir para ser sua foto de perfil.
+										</Typography>
+										<Typography gutterBottom>Após concluir seu cadastro, você pode editar seu perfil e então subir uma imagem para usar como foto de perfil.</Typography>
+										<Typography gutterBottom>
+											<InputText mask='' type='link' label='Link para foto de perfil' {...register('avatar')} />
+										</Typography>
+									</DialogContentText>
+									<DialogActions>
+										<Button color='primary' variant='contained' onClick={handleClose}>
+											Ok
+										</Button>
+									</DialogActions>
+								</DialogContent>
+							</Dialog>
+							<ColorButton variant='contained' type='submit'>
+								Criar
+							</ColorButton>
+						</Stack>
+					</ButtonsGroup>
 				</RegisterCard>
 			</Form>
 		</RegisterContainer>

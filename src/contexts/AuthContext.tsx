@@ -1,4 +1,4 @@
-import React, { createContext, useEffect, useState } from 'react';
+import React, { createContext, useEffect, useMemo, useRef, useState } from 'react';
 import { api } from '../services/axios/api';
 
 interface User {
@@ -19,11 +19,11 @@ export const AuthContext = createContext({} as AuthContextType);
 export function AuthContextProvider({ children }: { children: React.ReactNode }) {
 	const [user, setUser] = useState<User>();
 	const [loading, setLoading] = useState(true);
-	console.log(!!user);
+
 	useEffect(() => {
 		async function initialLoading() {
 			setLoading(true);
-			const userStringfy = await localStorage.getItem('Coffee-Delivery:USER');
+			const userStringfy = await localStorage.getItem(`${import.meta.env.VITE_APP_USER_KEY}`);
 			if (userStringfy) {
 				setUser(JSON.parse(userStringfy));
 			}
@@ -33,13 +33,14 @@ export function AuthContextProvider({ children }: { children: React.ReactNode })
 	}, []);
 
 	async function signIn(email: string, password: string, setLoading: React.Dispatch<React.SetStateAction<boolean>>) {
-		console.log(email, password);
 		setLoading(true);
 		const { data } = await api.post('/authenticate/login', { email, password });
 		setLoading(false);
+
 		setUser(data.user);
-		localStorage.setItem('Coffee-Delivery:USER', JSON.stringify(data.user));
-		localStorage.setItem('Coffee-Delivery:TOKEN', data.token);
+
+		localStorage.setItem(`${import.meta.env.VITE_APP_USER_KEY}`, JSON.stringify(data.user));
+		localStorage.setItem(`${import.meta.env.VITE_APP_TOKEN_KEY}`, data.token);
 	}
 
 	async function signOut() {

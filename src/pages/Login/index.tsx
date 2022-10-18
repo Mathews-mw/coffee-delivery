@@ -4,7 +4,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
 import { Form, LoginCard, LoginContainer } from './styles';
 import { InputText } from '../../components/InputText';
-import { Link } from 'react-router-dom';
+import { Link, Navigate } from 'react-router-dom';
 import { AuthContext } from '../../contexts/AuthContext';
 
 const loginFormSchema = Yup.object({
@@ -38,6 +38,7 @@ export function Login() {
 
 	return (
 		<LoginContainer>
+			<h1>Login</h1>
 			<LoginCard>
 				<h1>Bem-vindo</h1>
 				<div>Logo da aplicação</div>

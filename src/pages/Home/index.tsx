@@ -1,6 +1,9 @@
 import { ShoppingCart, Timer, Package, Coffee } from 'phosphor-react';
+import { useContext } from 'react';
+import { Navigate } from 'react-router-dom';
 import coverImage from '../../assets/Imagem.svg';
 import { CoffeCard } from '../../components/CoffeCard';
+import { AuthContext } from '../../contexts/AuthContext';
 import { CoffeList, HeadContainer, HomeContainer, Icon, Main } from './styles';
 
 export function Home() {
@@ -10,10 +13,7 @@ export function Home() {
 				<div className='infosCover'>
 					<div className='textTitle'>
 						<h1>Encontre o café perfeito para qualquer hora do dia</h1>
-						<h3>
-							Com o Coffee Delivery você recebe seu café onde estiver, a
-							qualquer hora
-						</h3>
+						<h3>Com o Coffee Delivery você recebe seu café onde estiver, a qualquer hora</h3>
 					</div>
 					<div className='iconsContainer'>
 						<div className='iconsSubContainer'>
