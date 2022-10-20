@@ -4,19 +4,17 @@ import Button, { ButtonProps } from '@mui/material/Button';
 
 export const RegisterContainer = styled.div`
 	display: flex;
-	flex-direction: column;
 	align-items: center;
-
-	width: 100%;
-	max-width: 1440px;
-	margin: 2rem auto 10rem;
-	padding: 10rem 10rem;
+	justify-content: center;
+	margin-top: 2rem;
 `;
 
 export const Form = styled.form``;
 
 export const RegisterCard = styled.div`
 	border-radius: 8px;
+	width: 30rem;
+	height: auto;
 	gap: 2rem;
 	padding: 2.5rem;
 	background-color: ${(props) => props.theme['base-card']};
@@ -28,15 +26,20 @@ export const RegisterCard = styled.div`
 		line-height: 1.5;
 		margin-bottom: 2rem;
 	}
+
+	.imgLink {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		margin: 1rem;
+	}
 `;
 
-export const ButtonsGroup = styled.div``;
-
-/* export const ColorButton = styledMUI(Button)(
-	({ theme }) => `
-  color: ${theme.bg.main}
-`
-); */
+export const ButtonsGroup = styled.div`
+	display: flex;
+	gap: 1rem;
+	margin-top: 1rem;
+`;
 
 export const ColorButton = styledMUI(Button)`
 `;

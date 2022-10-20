@@ -26,6 +26,7 @@
     "react-hook-form": "^7.36.1",
     "react-input-mask": "^2.0.4",
     "react-router-dom": "^6.4.1",
+    "react-toastify": "^9.0.8",
     "styled-components": "^5.3.6",
     "vite-plugin-dotenv": "^0.1.15",
     "yup": "^0.32.11"

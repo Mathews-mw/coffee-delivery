@@ -4,7 +4,7 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import { useCallback, useContext, useEffect, useState } from 'react';
 import Avatar from '@mui/material/Avatar';
 import { BackgroundLetterAvatars } from '../BackgroundLetterAvatars';
-import { House, MapPin, ShoppingCart, Gear, SignOut } from 'phosphor-react';
+import { House, MapPin, ShoppingCart, Gear, SignOut, Storefront } from 'phosphor-react';
 
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
@@ -81,9 +81,17 @@ export function Header() {
 					</Tooltip>
 
 					<Tooltip title='Checkout'>
-						<NavLink to='/checkout' title='Checkout'>
+						<NavLink to='/checkout'>
 							<Cart>
 								<ShoppingCart weight='fill' size={24} />
+							</Cart>
+						</NavLink>
+					</Tooltip>
+
+					<Tooltip title='Registro de produtos'>
+						<NavLink to='/productsregister'>
+							<Cart>
+								<Storefront weight='fill' size={24} />
 							</Cart>
 						</NavLink>
 					</Tooltip>

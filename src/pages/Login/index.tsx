@@ -2,10 +2,11 @@ import { useContext, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
-import { Form, LoginCard, LoginContainer } from './styles';
 import { InputText } from '../../components/InputText';
 import { Link, Navigate } from 'react-router-dom';
 import { AuthContext } from '../../contexts/AuthContext';
+
+import { Form, LoginCard, LoginContainer, ButtonsGroup, ColorButton } from './styles';
 
 const loginFormSchema = Yup.object({
 	email: Yup.string().required('Campo obrigatório'),
@@ -38,34 +39,26 @@ export function Login() {
 
 	return (
 		<LoginContainer>
-			<h1>Login</h1>
-			<LoginCard>
-				<h1>Bem-vindo</h1>
-				<div>Logo da aplicação</div>
-				<Form onSubmit={handleSubmit(handleLoginSubmit)}>
-					<InputText label='Email' mask='' className='input' type='text' {...register('email', { disabled: loading })} error={errors.email?.message} required />
-
-					<InputText
-						label='Senha'
-						mask=''
-						passwordView
-						className={`input ${errors.password ? 'is-invalid' : ''}`}
-						type='password'
-						{...register('password', { disabled: loading })}
-						error={errors.password?.message}
-						required
-					/>
-
-					<div>
-						<button type='submit' disabled={loading}>
-							Acessar
-						</button>
-						<Link to='/autenticacao/register' style={{ textDecoration: 'none' }}>
-							Criar um conta nova
-						</Link>
+			<Form onSubmit={handleSubmit(handleLoginSubmit)}>
+				<LoginCard>
+					<div className='headerGroup'>
+						<h1>Login</h1>
 					</div>
-				</Form>
-			</LoginCard>
+					<InputText label='Email' mask='' className='input' type='text' {...register('email', { disabled: loading })} error={errors.email ? errors.email.message : ''} />
+					<InputText label='Senha' mask='' passwordView error={errors.password ? errors.password.message : ''} type='password' {...register('password', { disabled: loading })} />
+
+					<ButtonsGroup>
+						<ColorButton variant='contained' type='submit' disabled={loading}>
+							Acessar
+						</ColorButton>
+						<Link to='/authenticate/register' style={{ textDecoration: 'none' }}>
+							<ColorButton variant='contained' color='secondary'>
+								Criar Conta
+							</ColorButton>
+						</Link>
+					</ButtonsGroup>
+				</LoginCard>
+			</Form>
 		</LoginContainer>
 	);
 }
