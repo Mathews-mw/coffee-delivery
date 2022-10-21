@@ -1,24 +1,24 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { InputText } from '../../components/InputText';
 
-import { Tag } from 'phosphor-react';
+import { Tag, FilePng, Image } from 'phosphor-react';
 
-import Button from '@mui/material/Button';
-import ButtonBase from '@mui/material/ButtonBase';
 import { Theme, useTheme } from '@mui/material/styles';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
+import Divider from '@mui/material/Divider';
+import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
-import Select, { SelectChangeEvent } from '@mui/material/Select';
 import Chip from '@mui/material/Chip';
 import TextField from '@mui/material/TextField';
 
-import { ButtonSearchCEP, PaymentCard, ProductsCard, OrderButton, ProductsRegContainer, ProductsRegCard, TagsSelect } from './styles';
+import { ProductsRegContainer, ProductsRegCard, TagsSelect, ProductImageCard, HeaderGroup, HeaderTitle, Form } from './styles';
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -44,6 +44,7 @@ const ProductsSchema = yup.object({
 	tags: yup.array().notRequired(),
 	price: yup.number().required('Campo obrigatório'),
 	description: yup.string().required('Campo obrigatório'),
+	product_img: yup.string().required('Campo obrigatório'),
 });
 
 type InputForm = yup.InferType<typeof ProductsSchema>;
@@ -51,8 +52,11 @@ type InputForm = yup.InferType<typeof ProductsSchema>;
 export function ProductsRegister() {
 	const theme = useTheme();
 	const [personName, setPersonName] = useState<string[]>([]);
+	const [imageDisplay, setImageDisplay] = useState<any>('');
+	const [imageName, setImageName] = useState<any>();
+	console.log(imageName);
 
-	const { register, handleSubmit, control } = useForm<InputForm>({
+	const { register, handleSubmit, watch } = useForm<InputForm>({
 		resolver: yupResolver(ProductsSchema),
 	});
 
@@ -66,17 +70,46 @@ export function ProductsRegister() {
 		);
 	};
 
-	function handleCreateNewProduct(data: any) {
-		console.log(data);
+	const fileUpload = watch('product_img');
+
+	async function uploadImage() {
+		if (fileUpload) {
+			const base64 = await convertBase64(fileUpload[0]);
+			setImageDisplay(base64);
+			setImageName(fileUpload[0]);
+		}
 	}
+
+	function convertBase64(file: any) {
+		return new Promise((resolve, reject) => {
+			const fileReader = new FileReader();
+			fileReader.readAsDataURL(file);
+
+			fileReader.onload = () => {
+				resolve(fileReader.result);
+			};
+
+			fileReader.onerror = (error) => {
+				reject(error);
+			};
+		});
+	}
+
+	useEffect(() => {
+		uploadImage();
+	}, [fileUpload]);
+
+	function handleCreateNewProduct(data: any) {}
 
 	return (
 		<ProductsRegContainer>
-			<h1>Registro de produtos</h1>
+			<HeaderTitle>
+				<h1>Registro de produtos</h1>
+			</HeaderTitle>
 
-			<form onSubmit={handleSubmit(handleCreateNewProduct)}>
+			<Form onSubmit={handleSubmit(handleCreateNewProduct)}>
 				<ProductsRegCard>
-					<div className='headerGroup'>
+					<HeaderGroup>
 						<span>
 							<Tag size={22} />
 						</span>
@@ -84,7 +117,7 @@ export function ProductsRegister() {
 							<h4>Informações sobre o produto</h4>
 							<p>Insira aqui as informações necessárias para cadastrar o produto na loja virtual</p>
 						</div>
-					</div>
+					</HeaderGroup>
 
 					<InputText mask='' type='text' label='Nome do produto' containerStyle={{ width: '50%' }} {...register('product_name')} />
 
@@ -119,27 +152,43 @@ export function ProductsRegister() {
 
 					<InputText mask='' type='text' label='Preço' containerStyle={{ width: '50%' }} {...register('price')} />
 					<TextField label='Descrição' id='Description' multiline rows={4} variant='outlined' placeholder='Insira alguma descrição para o produto...' {...register('description')} />
+
+					<div>
+						<Button variant='contained' type='submit'>
+							Cadastrar produto
+						</Button>
+					</div>
 				</ProductsRegCard>
 
-				<ProductsCard>
-					<div>
+				<ProductImageCard>
+					<HeaderGroup>
+						<span>
+							<FilePng size={22} />
+						</span>
 						<div>
-							<p>Total de itens</p>
-							<span>R$ 29,70</span>
+							<h4>Inserir imagem</h4>
 						</div>
-						<div>
-							<p>Entrega</p>
-							<span>R$ 3,50</span>
-						</div>
-						<div>
-							<h4>Total</h4>
-							<h3>R$ 33,20</h3>
-						</div>
-					</div>
+					</HeaderGroup>
+					<div className='imgGroup'>
+						{imageDisplay ? (
+							<img src={imageDisplay} alt='' />
+						) : (
+							<span>
+								<Image size={160} />
+							</span>
+						)}
 
-					<OrderButton type='submit'>CONFIRMAR PEDIDO</OrderButton>
-				</ProductsCard>
-			</form>
+						{imageName && <span>{imageName.name}</span>}
+					</div>
+					<Divider />
+					<div>
+						<Button variant='contained' component='label'>
+							Upload
+							<input hidden accept='image/*' type='file' {...register('product_img')} />
+						</Button>
+					</div>
+				</ProductImageCard>
+			</Form>
 		</ProductsRegContainer>
 	);
 }

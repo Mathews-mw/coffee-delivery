@@ -2,24 +2,24 @@ import styled from 'styled-components';
 
 export const ProductsRegContainer = styled.div``;
 
-export const ProductsRegCard = styled.div`
+export const Form = styled.form`
+	display: grid;
+	grid-template-areas: 'MAIN ASIDE';
+	grid-template-columns: 1fr 20rem;
+	gap: 2rem;
+`;
+
+export const HeaderTitle = styled.header`
+	margin: 2.5rem 0 1rem;
+`;
+
+export const ProductsRegCard = styled.main`
 	display: flex;
 	flex-direction: column;
 	border-radius: 8px;
 	gap: 2rem;
 	padding: 2.5rem;
 	background-color: ${(props) => props.theme['base-card']};
-
-	.headerGroup {
-		display: flex;
-		gap: 0.5rem;
-		width: 100%;
-		line-height: 1.5;
-
-		svg {
-			color: ${(props) => props.theme['yellow-dark']};
-		}
-	}
 
 	.cepGroup {
 		display: flex;
@@ -40,42 +40,19 @@ export const ProductsRegCard = styled.div`
 	}
 `;
 
-export const TagsSelect = styled.div``;
-
-export const PaymentCard = styled.div`
+export const HeaderGroup = styled.div`
 	display: flex;
-	flex-direction: column;
-	border-radius: 8px;
-	gap: 2rem;
-	padding: 2.5rem;
-	background-color: ${(props) => props.theme['base-card']};
-
-	.headerGroup {
-		display: flex;
-		gap: 0.5rem;
-		width: 100%;
-		line-height: 1.5;
-
-		svg {
-			color: ${(props) => props.theme.purple};
-		}
-	}
-
-	.paymentType {
-		display: flex;
-		width: 100%;
-		gap: 1rem;
-
-		justify-content: space-evenly;
-		align-items: center;
-
-		svg {
-			color: ${(props) => props.theme.purple};
-		}
+	gap: 0.5rem;
+	width: 100%;
+	line-height: 1.5;
+	svg {
+		color: ${(props) => props.theme['yellow-dark']};
 	}
 `;
 
-export const ProductsCard = styled.div`
+export const TagsSelect = styled.div``;
+
+export const ProductsCard = styled.aside`
 	display: flex;
 	flex-direction: column;
 	border-radius: 8px;
@@ -111,4 +88,26 @@ export const OrderButton = styled.button`
 
 	cursor: pointer;
 	box-shadow: 0px 3px 1px -2px rgb(0 0 0 / 20%), 0px 2px 2px 0px rgb(0 0 0 / 14%), 0px 1px 5px 0px rgb(0 0 0 / 12%);
+`;
+
+export const ProductImageCard = styled.div`
+	display: flex;
+	flex-direction: column;
+	height: fit-content;
+	border-radius: 6px 44px 6px 44px;
+	gap: 2rem;
+	padding: 2.5rem;
+	background-color: ${(props) => props.theme['base-card']};
+
+	.imgGroup {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		gap: 1rem;
+	}
+
+	img {
+		width: 10rem;
+	}
 `;
