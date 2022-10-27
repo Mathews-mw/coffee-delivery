@@ -8,11 +8,12 @@ import { Checkout } from '../pages/Checkout';
 import { Sucess } from '../pages/Sucess';
 import { useContext, useEffect } from 'react';
 import { AuthContext } from '../contexts/AuthContext';
-import { AuthRoute } from './Auth.routes';
-import { UserRoute } from './User.routes';
+import { AuthRoutes } from './Auth.routes';
+import { UserRoutes } from './User.routes';
+import { AdminRoutes } from './Admin.routes';
 
 export function Router() {
-	const { isSigned, loading } = useContext(AuthContext);
+	const { isSigned, isAdmin, loading } = useContext(AuthContext);
 
 	if (loading) {
 		return (
@@ -24,8 +25,9 @@ export function Router() {
 
 	return (
 		<Routes>
-			{isSigned && <Route path='*' element={<UserRoute />} />}
-			{!isSigned && <Route path='*' element={<AuthRoute />} />}
+			{isSigned && isAdmin && <Route path='*' element={<AdminRoutes />} />}
+			{isSigned && <Route path='*' element={<UserRoutes />} />}
+			{!isSigned && <Route path='*' element={<AuthRoutes />} />}
 		</Routes>
 	);
 }

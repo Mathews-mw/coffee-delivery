@@ -2,15 +2,19 @@ import styled from 'styled-components';
 
 export const ProductsRegContainer = styled.div``;
 
+export const HeaderTitle = styled.header`
+	margin: 2.5rem 0 1rem;
+
+	h1 {
+		font-size: 2rem;
+	}
+`;
+
 export const Form = styled.form`
 	display: grid;
 	grid-template-areas: 'MAIN ASIDE';
 	grid-template-columns: 1fr 20rem;
 	gap: 2rem;
-`;
-
-export const HeaderTitle = styled.header`
-	margin: 2.5rem 0 1rem;
 `;
 
 export const ProductsRegCard = styled.main`

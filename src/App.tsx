@@ -4,8 +4,10 @@ import { BrowserRouter } from 'react-router-dom';
 import { Router } from './routes';
 import { GlobalStyle } from './styles/global';
 import { defaultTheme } from './styles/themes/default';
-import theme from './styles/themes/theme';
 import { AuthContextProvider } from './contexts/AuthContext';
+import { ToastContainer } from 'react-toastify';
+import theme from './styles/themes/theme';
+import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
 	return (
@@ -15,6 +17,7 @@ function App() {
 				<BrowserRouter>
 					<AuthContextProvider>
 						<Router />
+						<ToastContainer />
 					</AuthContextProvider>
 				</BrowserRouter>
 			</ThemeProviderMUI>

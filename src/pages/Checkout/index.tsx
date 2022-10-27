@@ -1,15 +1,47 @@
+import axios from 'axios';
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import * as yup from 'yup';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { InputText } from '../../components/InputText';
+import { MapPinLine, CurrencyDollar, CreditCard, Bank, Money } from 'phosphor-react';
+
 import Button from '@mui/material/Button';
 import ButtonBase from '@mui/material/ButtonBase';
-//prettier-ignore
-import { MapPinLine, CurrencyDollar, CreditCard, Bank, Money } from 'phosphor-react';
-import { InputText } from '../../components/InputText';
 import { ButtonSearchCEP, CheckoutContainer, DeliveryCard, PaymentCard, ProductsCard, OrderButton } from './styles';
 
+const newCheckoutSchema = yup.object({
+	cep: yup.string(),
+});
+
+type formInputs = yup.InferType<typeof newCheckoutSchema>;
+
 export function Checkout() {
+	const [address, setAddress] = useState<ICEPRequest>();
+	const {
+		register,
+		handleSubmit,
+		watch,
+		formState: { errors },
+	} = useForm<formInputs>({
+		resolver: yupResolver(newCheckoutSchema),
+	});
+
+	async function getCEP() {
+		const cep = watch('cep');
+		const response = await axios.get(`https://viacep.com.br/ws/${cep}/json/`);
+
+		setAddress(response.data);
+	}
+
+	function handleCreateOrder(data: any) {
+		console.log(data);
+	}
+
 	return (
 		<CheckoutContainer>
 			<h1>Complete se pedido</h1>
-			<form action=''>
+			<form onSubmit={handleSubmit(handleCreateOrder)}>
 				<DeliveryCard>
 					<div className='headerGroup'>
 						<span>
@@ -22,24 +54,20 @@ export function Checkout() {
 					</div>
 
 					<div className='cepGroup'>
-						<InputText mask='' type='number' label='CEP' />
-						<ButtonSearchCEP
-							onClick={(e) => {
-								e.preventDefault();
-							}}
-						>
+						<InputText mask='' type='number' label='CEP' {...register('cep')} />
+						<ButtonSearchCEP type='button' onClick={() => getCEP()}>
 							Pesquisar
 						</ButtonSearchCEP>
 					</div>
-					<InputText mask='' type='text' label='Rua' />
+					<InputText mask='' type='text' label='Rua' defaultValue={address?.logradouro} />
 					<div className='streetGroup'>
 						<InputText mask='' type='number' label='Numero' containerStyle={{ width: '20%' }} />
 						<InputText mask='' type='text' label='Complemento' placeholder='Opcional' containerStyle={{ flex: 3.5 }} />
 					</div>
 					<div className='cityGroup'>
-						<InputText mask='' type='text' label='Bairro' containerStyle={{ flex: 2 }} />
-						<InputText mask='' type='text' label='Cidade' containerStyle={{ flex: 5.5 }} />
-						<InputText mask='' type='text' label='UF' />
+						<InputText mask='' type='text' label='Bairro' defaultValue={address?.bairro} containerStyle={{ flex: 2 }} />
+						<InputText mask='' type='text' label='Cidade' defaultValue={address?.localidade} containerStyle={{ flex: 5.5 }} />
+						<InputText mask='' type='text' label='UF' defaultValue={address?.uf} />
 					</div>
 				</DeliveryCard>
 
@@ -85,7 +113,7 @@ export function Checkout() {
 						</div>
 					</div>
 
-					<OrderButton>CONFIRMAR PEDIDO</OrderButton>
+					<OrderButton type='submit'>CONFIRMAR PEDIDO</OrderButton>
 				</ProductsCard>
 			</form>
 		</CheckoutContainer>

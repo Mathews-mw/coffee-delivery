@@ -2,13 +2,20 @@ import React, { createContext, useEffect, useMemo, useRef, useState } from 'reac
 import { api } from '../services/axios/api';
 
 interface User {
+	id: number;
+	name: string;
 	email: string;
+	phone_number: string;
+	cpf: string;
 	password: string;
+	avatar: string;
+	isAdmin: boolean;
 }
 
 interface AuthContextType {
 	user?: User;
 	isSigned: boolean;
+	isAdmin: boolean;
 	loading: boolean;
 	signIn: (email: string, password: string, setLoading: React.Dispatch<React.SetStateAction<boolean>>) => void;
 	signOut: () => void;
@@ -19,6 +26,8 @@ export const AuthContext = createContext({} as AuthContextType);
 export function AuthContextProvider({ children }: { children: React.ReactNode }) {
 	const [user, setUser] = useState<User>();
 	const [loading, setLoading] = useState(true);
+
+	console.log(!!user?.isAdmin);
 
 	useEffect(() => {
 		async function initialLoading() {
@@ -54,6 +63,7 @@ export function AuthContextProvider({ children }: { children: React.ReactNode })
 				user,
 				loading,
 				isSigned: !!user,
+				isAdmin: !!user?.isAdmin,
 				signIn,
 				signOut,
 			}}

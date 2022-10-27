@@ -1,12 +1,15 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
+import { api } from '../../services/axios/api';
+import { ShowErrorRequest } from '../../utils/ShowErrorRequest';
 import { useForm, Controller } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { v4 as uuidV4 } from 'uuid';
 import { InputText } from '../../components/InputText';
-
 import { Tag, FilePng, Image } from 'phosphor-react';
-
 import { Theme, useTheme } from '@mui/material/styles';
+import { toast } from 'react-toastify';
+
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import Divider from '@mui/material/Divider';
 import Button from '@mui/material/Button';
@@ -41,10 +44,16 @@ function getStyles(name: string, personName: readonly string[], theme: Theme) {
 
 const ProductsSchema = yup.object({
 	product_name: yup.string().required('Campo obrigatório'),
-	tags: yup.array().notRequired(),
-	price: yup.number().required('Campo obrigatório'),
+	tags: yup.mixed().notRequired(),
+	price: yup.mixed().required('Campo obrigatório'),
 	description: yup.string().required('Campo obrigatório'),
-	product_img: yup.string().required('Campo obrigatório'),
+	product_img: yup
+		.mixed()
+		.required()
+		.test('fileVerifyMin', 'Campo obrigatório', (value) => value.length > 0)
+		.test('fileVerifyMax', 'Quatidade máxima de arquivos permitidos 1', (value) => value.length < 2)
+		.test('fileFormat', 'Formato não permitido', (value) => value[0] && ['png', 'jpeg', 'svg'].includes(value[0].name.split('.').slice(-1)[0]))
+		.test('fileSize', 'Tamanho máximo permitido 20 MB', (value) => value[0] && value[0].size <= 5000000),
 });
 
 type InputForm = yup.InferType<typeof ProductsSchema>;
@@ -54,9 +63,8 @@ export function ProductsRegister() {
 	const [personName, setPersonName] = useState<string[]>([]);
 	const [imageDisplay, setImageDisplay] = useState<any>('');
 	const [imageName, setImageName] = useState<any>();
-	console.log(imageName);
 
-	const { register, handleSubmit, watch } = useForm<InputForm>({
+	const { register, handleSubmit, watch, reset } = useForm<InputForm>({
 		resolver: yupResolver(ProductsSchema),
 	});
 
@@ -64,10 +72,7 @@ export function ProductsRegister() {
 		const {
 			target: { value },
 		} = event;
-		setPersonName(
-			// On autofill we get a stringified value.
-			typeof value === 'string' ? value.split(',') : value
-		);
+		setPersonName(typeof value === 'string' ? value.split(',') : value);
 	};
 
 	const fileUpload = watch('product_img');
@@ -75,6 +80,7 @@ export function ProductsRegister() {
 	async function uploadImage() {
 		if (fileUpload) {
 			const base64 = await convertBase64(fileUpload[0]);
+
 			setImageDisplay(base64);
 			setImageName(fileUpload[0]);
 		}
@@ -99,7 +105,33 @@ export function ProductsRegister() {
 		uploadImage();
 	}, [fileUpload]);
 
-	function handleCreateNewProduct(data: any) {}
+	async function handleCreateNewProduct(data: InputForm) {
+		const uuid_ref_tag = uuidV4();
+
+		const formData = new FormData();
+		try {
+			formData.append('image_name', fileUpload[0]);
+			formData.append('product_name', data.product_name);
+			formData.append('price', data.price.toString());
+			formData.append('description', data.description);
+			formData.append('uuid_ref_tag', uuid_ref_tag);
+			formData.append('tags', data.tags);
+			const response = await api.post('/products', formData, { headers: { 'Content-Type': 'multipart/form-data;' } });
+
+			toast('Produto cadastrado com sucesso', {
+				autoClose: 4000,
+				type: 'success',
+				theme: 'colored',
+				draggable: true,
+			});
+
+			setImageDisplay(null);
+			setImageName(null);
+			reset();
+		} catch (error) {
+			ShowErrorRequest(error);
+		}
+	}
 
 	return (
 		<ProductsRegContainer>
@@ -150,7 +182,7 @@ export function ProductsRegister() {
 						</FormControl>
 					</TagsSelect>
 
-					<InputText mask='' type='text' label='Preço' containerStyle={{ width: '50%' }} {...register('price')} />
+					<InputText mask='99,99' type='text' label='Preço' defaultValue={'00,00'} containerStyle={{ width: '50%' }} {...register('price')} />
 					<TextField label='Descrição' id='Description' multiline rows={4} variant='outlined' placeholder='Insira alguma descrição para o produto...' {...register('description')} />
 
 					<div>

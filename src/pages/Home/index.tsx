@@ -1,12 +1,26 @@
 import { ShoppingCart, Timer, Package, Coffee } from 'phosphor-react';
-import { useContext } from 'react';
-import { Navigate } from 'react-router-dom';
+import { useCallback, useEffect, useState } from 'react';
 import coverImage from '../../assets/Imagem.svg';
 import { CoffeCard } from '../../components/CoffeCard';
-import { AuthContext } from '../../contexts/AuthContext';
+import { api } from '../../services/axios/api';
 import { CoffeList, HeadContainer, HomeContainer, Icon, Main } from './styles';
 
 export function Home() {
+	const [products, setProducts] = useState<IProduct[]>();
+	const [tags, setTags] = useState<ITag[]>();
+
+	const fetchProducts = useCallback(async () => {
+		const response = await api.get('/products');
+		const tagsResponse = await api.get('/products/tags');
+
+		setProducts(response.data);
+		setTags(tagsResponse.data);
+	}, []);
+
+	useEffect(() => {
+		fetchProducts();
+	}, [fetchProducts]);
+
 	return (
 		<HomeContainer>
 			<HeadContainer>
@@ -54,9 +68,18 @@ export function Home() {
 				<h1>Nossos cafés</h1>
 
 				<CoffeList>
-					<CoffeCard tags={['tradicional', 'gelado']} />
-					<CoffeCard tags={['especial', 'alcoólico', 'gelado']} />
-					<CoffeCard tags={['especial', 'com leite']} />
+					{products?.map((product) => {
+						return (
+							<CoffeCard
+								key={product.id}
+								product_name={product.product_name}
+								price={product.price}
+								description={product.description}
+								image_name={product.image_name}
+								tags={tags && tags.filter((tag) => tag.uuid_ref_product === product.uuid_ref_tag)}
+							/>
+						);
+					})}
 				</CoffeList>
 			</Main>
 		</HomeContainer>
