@@ -1,6 +1,6 @@
-import expressoGelado from '../../assets/expresso-gelado.svg';
 import { TagCard } from '../TagCard';
 import { ShoppingCartSimple } from 'phosphor-react';
+
 import { Card, InfosContainer, ValuesContainer } from './styles';
 
 interface ICoffeCardProps {
@@ -30,7 +30,7 @@ export function CoffeCard({ product_name, price, description, tags, image_name }
 
 				<ValuesContainer>
 					<span>
-						<small>R$</small> <strong>{price}</strong>
+						<strong>{new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(price)}</strong>
 					</span>
 					<div className='incrementGroup'>
 						<button className='increment'>-</button>
