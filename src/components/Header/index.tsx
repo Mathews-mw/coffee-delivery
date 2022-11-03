@@ -1,18 +1,20 @@
 import axios from 'axios';
-import { AuthContext } from '../../contexts/AuthContext';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { useCallback, useContext, useEffect, useState } from 'react';
-import Avatar from '@mui/material/Avatar';
+import { AuthContext } from '../../contexts/AuthContext';
+import { OrderContext } from '../../contexts/OrderContext';
 import { BackgroundLetterAvatars } from '../BackgroundLetterAvatars';
+import { useCallback, useContext, useEffect, useState } from 'react';
+
 import { House, MapPin, ShoppingCart, Gear, SignOut, Storefront, ListDashes } from 'phosphor-react';
 
 import Menu from '@mui/material/Menu';
-import MenuItem from '@mui/material/MenuItem';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import IconButton from '@mui/material/IconButton';
-import Typography from '@mui/material/Typography';
-import Tooltip from '@mui/material/Tooltip';
 import Stack from '@mui/material/Stack';
+import Badge from '@mui/material/Badge';
+import Avatar from '@mui/material/Avatar';
+import Tooltip from '@mui/material/Tooltip';
+import MenuItem from '@mui/material/MenuItem';
+import IconButton from '@mui/material/IconButton';
+import ListItemIcon from '@mui/material/ListItemIcon';
 
 import Logo from '../../assets/Logo.svg';
 import { Cart, HeaderContainer, Location, Home, Frame } from './styles';
@@ -28,6 +30,7 @@ interface IAdress {
 
 export function Header() {
 	const { signOut } = useContext(AuthContext);
+	const { wishList } = useContext(OrderContext);
 
 	const [adress, setAdress] = useState<IAdress>();
 	const [imageProfile, setImageProfile] = useState(true);
@@ -82,9 +85,11 @@ export function Header() {
 
 					<Tooltip title='Checkout'>
 						<NavLink to='/checkout'>
-							<Cart>
-								<ShoppingCart weight='fill' size={24} />
-							</Cart>
+							<Badge badgeContent={wishList.length} color='secondary'>
+								<Cart>
+									<ShoppingCart weight='fill' size={24} />
+								</Cart>
+							</Badge>
 						</NavLink>
 					</Tooltip>
 

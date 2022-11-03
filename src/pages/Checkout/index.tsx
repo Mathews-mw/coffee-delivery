@@ -1,19 +1,20 @@
 import axios from 'axios';
-import { useState } from 'react';
-import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
+import { useForm } from 'react-hook-form';
+import { useContext, useState } from 'react';
+import { Ordered } from '../../components/Ordered';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { InputText } from '../../components/InputText';
-
-import expressoGelado from '../../assets/expresso-gelado.svg';
-import americano from '../../assets/americano.svg';
+import { OrderContext } from '../../contexts/OrderContext';
 
 import { MapPinLine, CurrencyDollar, CreditCard, Bank, Money, ShoppingCartSimple, Trash } from 'phosphor-react';
 
+import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
-import Stack from '@mui/material/Stack';
-import { HeaderTitle, Form, CheckoutItem, CheckoutContainer, DeliveryCard, PaymentCard, ProductsCard, HeaderGroup } from './styles';
+
+import { HeaderTitle, Form, CheckoutContainer, DeliveryCard, PaymentCard, ProductsCard, HeaderGroup, OrderList, Scroll } from './styles';
+import { priceFormatter } from '../../utils/formatter';
 
 const newCheckoutSchema = yup.object({
 	cep: yup.string(),
@@ -22,7 +23,21 @@ const newCheckoutSchema = yup.object({
 type formInputs = yup.InferType<typeof newCheckoutSchema>;
 
 export function Checkout() {
+	const { wishList, removeWishFromList } = useContext(OrderContext);
+
 	const [address, setAddress] = useState<ICEPRequest>();
+
+	const totalCart = wishList.reduce((total, element) => {
+		return (total += element.price * element.amount);
+	}, 0);
+
+	const totalAmount = wishList.reduce((amount, element) => {
+		return (amount += element.amount);
+	}, 0);
+
+	const delivery = 3.5;
+	const totalOrder = totalCart + delivery;
+
 	const {
 		register,
 		handleSubmit,
@@ -110,59 +125,31 @@ export function Checkout() {
 				</PaymentCard>
 
 				<ProductsCard>
-					<Stack spacing={3}>
-						<CheckoutItem>
-							<img src={expressoGelado} alt='' width={64} height={64} />
-							<div>
-								<p>Expresso Tradicional</p>
-								<div className='buttonsContainer'>
-									<div className='incrementGroup'>
-										<button className='increment'>-</button>
-										<span>1</span>
-										<button className='increment'>+</button>
-									</div>
-									<Button variant='contained' color='inherit' size='small' startIcon={<Trash weight='fill' size={18} color='#8047F8' />}>
-										Remover
-									</Button>
-								</div>
-							</div>
-							<strong>R$ 9,90</strong>
-						</CheckoutItem>
-						<Divider variant='middle' />
-						<CheckoutItem>
-							<img src={americano} alt='' width={64} height={64} />
-							<div>
-								<p>Expresso Tradicional</p>
-								<div className='buttonsContainer'>
-									<div className='incrementGroup'>
-										<button className='increment'>-</button>
-										<span>1</span>
-										<button className='increment'>+</button>
-									</div>
-									<Button variant='contained' color='inherit' size='small' startIcon={<Trash weight='fill' size={18} color='#8047F8' />}>
-										Remover
-									</Button>
-								</div>
-							</div>
-							<strong>R$ 9,90</strong>
-						</CheckoutItem>
-						<Divider variant='middle' />
-					</Stack>
+					<Scroll>
+						<OrderList>
+							<Stack spacing={3}>
+								{wishList.length > 0 &&
+									wishList.map((wish) => {
+										return <Ordered key={wish.id} id={wish.id} itemName={wish.product_name} price={wish.price} amount={wish.amount} imageName={wish.image_name} />;
+									})}
+							</Stack>
+						</OrderList>
+					</Scroll>
 
 					<Stack spacing={2}>
 						<div className='resultsInfos'>
-							<small>Total de itens</small>
-							<span>R$ 29,70</span>
+							<small>Total do carrinho</small>
+							<span>{priceFormatter.format(totalCart)}</span>
 						</div>
 
 						<div className='resultsInfos'>
 							<small>Entrega</small>
-							<span>R$ 3,50</span>
+							<span>{priceFormatter.format(delivery)}</span>
 						</div>
 
 						<div className='resultsInfos'>
 							<strong>Total</strong>
-							<strong>R$ 33,20</strong>
+							<strong>{priceFormatter.format(totalOrder)}</strong>
 						</div>
 					</Stack>
 

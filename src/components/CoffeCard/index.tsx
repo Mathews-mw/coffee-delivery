@@ -1,9 +1,19 @@
+import { useContext, useEffect, useState } from 'react';
 import { TagCard } from '../TagCard';
-import { ShoppingCartSimple } from 'phosphor-react';
+import { priceFormatter } from '../../utils/formatter';
+import { OrderContext } from '../../contexts/OrderContext';
 
-import { Card, InfosContainer, ValuesContainer } from './styles';
+import { ShoppingCartSimple, Plus, Minus } from 'phosphor-react';
+
+import Stack from '@mui/material/Stack';
+import Button from '@mui/material/Button';
+import IconButton from '@mui/material/IconButton';
+import ButtonGroup from '@mui/material/ButtonGroup';
+
+import { Card, ColorButton, InfosContainer, NumberCount, ValuesContainer } from './styles';
 
 interface ICoffeCardProps {
+	id: number;
 	product_name: string;
 	price: number;
 	description: string;
@@ -11,7 +21,15 @@ interface ICoffeCardProps {
 	image_name: string;
 }
 
-export function CoffeCard({ product_name, price, description, tags, image_name }: ICoffeCardProps) {
+export function CoffeCard({ id, product_name, price, description, tags, image_name }: ICoffeCardProps) {
+	const { addNewOrder, wishList } = useContext(OrderContext);
+
+	const [amount, setAmount] = useState(0);
+
+	function handleNewOrder(id: number, product_name: string, price: number, amount: number, image_name: string) {
+		addNewOrder(id, product_name, price, amount, image_name);
+	}
+
 	return (
 		<Card>
 			<img className='coffeImg' src={`http://localhost:3838/files/productsImages/${image_name}`} alt={product_name} />
@@ -30,16 +48,26 @@ export function CoffeCard({ product_name, price, description, tags, image_name }
 
 				<ValuesContainer>
 					<span>
-						<strong>{new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(price)}</strong>
+						<strong>{priceFormatter.format(price)}</strong>
 					</span>
-					<div className='incrementGroup'>
-						<button className='increment'>-</button>
-						<span>1</span>
-						<button className='increment'>+</button>
-					</div>
-					<button className='buy'>
-						<ShoppingCartSimple weight='fill' size={22} />
-					</button>
+
+					<Stack direction='row' spacing={1} alignItems='center'>
+						<ButtonGroup variant='contained' color='inherit' size='small' aria-label='small button group'>
+							<Button onClick={() => setAmount(amount + 1)}>
+								<Plus weight='fill' size={14} color='#8047F8' />
+							</Button>
+							<Button aria-readonly disableTouchRipple sx={{ cursor: 'default' }}>
+								{amount}
+							</Button>
+							<Button onClick={() => setAmount(amount - 1)} disabled={amount >= 1 ? false : true}>
+								<Minus weight='fill' size={14} color='#8047F8' />
+							</Button>
+						</ButtonGroup>
+
+						<IconButton aria-label='Adicionar' color='secondary' onClick={() => handleNewOrder(id, product_name, price, amount, image_name)} disabled={amount >= 1 ? false : true}>
+							<ShoppingCartSimple weight='fill' size={26} />
+						</IconButton>
+					</Stack>
 				</ValuesContainer>
 			</div>
 		</Card>

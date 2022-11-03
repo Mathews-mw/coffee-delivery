@@ -154,7 +154,7 @@ export function ProductsRegister() {
 					<InputText mask='' type='text' label='Nome do produto' containerStyle={{ width: '50%' }} {...register('product_name')} />
 
 					<TagsSelect>
-						<FormControl sx={{ m: 1, width: 300 }}>
+						<FormControl sx={{ width: 300 }}>
 							<InputLabel id='demo-multiple-chip-label'>Tags</InputLabel>
 							<Select
 								labelId='demo-multiple-chip-label'

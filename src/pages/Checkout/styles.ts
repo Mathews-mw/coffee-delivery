@@ -16,8 +16,8 @@ export const Form = styled.form`
 	grid-template-areas:
 		'MAIN ASIDE'
 		'FOOTER ASIDE';
-	grid-template-columns: auto 28rem;
-	grid-template-rows: auto 12.9rem;
+	grid-template-columns: 1fr 28rem;
+	grid-template-rows: 1fr 12.9rem;
 	gap: 2rem;
 `;
 
@@ -114,64 +114,27 @@ export const ProductsCard = styled.div`
 	}
 `;
 
-export const CheckoutItem = styled.div`
-	display: flex;
-	justify-content: space-between;
+export const OrderList = styled.div`
+	direction: ltr;
+	padding: 0 1rem;
+	max-height: calc(100vh - 29rem);
+`;
 
-	img {
-		width: 64px;
-		height: 64px;
+export const Scroll = styled.div`
+	direction: rtl;
+	overflow-y: scroll;
+	::-webkit-scrollbar {
+		width: 4px;
 	}
 
-	p {
-		margin-bottom: 0.2rem;
+	::-webkit-scrollbar-track {
+		background: transparent;
+		border-radius: 100rem;
 	}
 
-	.buttonsContainer {
-		display: flex;
-		align-items: center;
-		gap: 0.5rem;
-	}
-
-	.incrementGroup {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		padding: 4px;
-		gap: 0.5rem;
-		border-radius: 6px;
-
-		background-color: ${(props) => props.theme['base-button']};
-	}
-
-	.incrementGroup:hover {
-		filter: brightness(0.9);
-	}
-
-	.increment {
-		background: none;
-		outline: none;
-		border: none;
-		font-size: 1.5rem;
-		color: ${(props) => props.theme.purple};
+	::-webkit-scrollbar-thumb {
+		background: ${(props) => props.theme['purple-light']};
+		border-radius: 100rem;
 		cursor: pointer;
-	}
-
-	.increment:hover {
-		color: ${(props) => props.theme['purple-dark']};
-	}
-
-	.buy {
-		border: none;
-		outline: none;
-		border-radius: 6px;
-		padding: 0.5rem;
-		background-color: ${(props) => props.theme['purple-dark']};
-		color: ${(props) => props.theme.white};
-		cursor: pointer;
-	}
-
-	.buy:hover {
-		background-color: ${(props) => props.theme.purple};
 	}
 `;

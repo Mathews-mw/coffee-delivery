@@ -27,8 +27,6 @@ export function AuthContextProvider({ children }: { children: React.ReactNode })
 	const [user, setUser] = useState<User>();
 	const [loading, setLoading] = useState(true);
 
-	console.log(!!user?.isAdmin);
-
 	useEffect(() => {
 		async function initialLoading() {
 			setLoading(true);

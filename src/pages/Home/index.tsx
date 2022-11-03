@@ -72,6 +72,7 @@ export function Home() {
 						return (
 							<CoffeCard
 								key={product.id}
+								id={product.id}
 								product_name={product.product_name}
 								price={product.price}
 								description={product.description}

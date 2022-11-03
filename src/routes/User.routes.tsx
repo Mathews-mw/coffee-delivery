@@ -1,9 +1,7 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { DefaultLayout } from '../layouts/DefaultLayout';
 import { Checkout } from '../pages/Checkout';
-import { Control } from '../pages/Control';
 import { Home } from '../pages/Home';
-import { ProductsRegister } from '../pages/ProductsRegister';
 import { Sucess } from '../pages/Sucess';
 
 export function UserRoutes() {

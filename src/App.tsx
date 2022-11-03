@@ -8,6 +8,7 @@ import { AuthContextProvider } from './contexts/AuthContext';
 import { ToastContainer } from 'react-toastify';
 import theme from './styles/themes/theme';
 import 'react-toastify/dist/ReactToastify.css';
+import { OrderContextProvider } from './contexts/OrderContext';
 
 function App() {
 	return (
@@ -16,7 +17,9 @@ function App() {
 				<GlobalStyle />
 				<BrowserRouter>
 					<AuthContextProvider>
-						<Router />
+						<OrderContextProvider>
+							<Router />
+						</OrderContextProvider>
 						<ToastContainer />
 					</AuthContextProvider>
 				</BrowserRouter>

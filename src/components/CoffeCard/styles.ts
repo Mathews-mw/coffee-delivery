@@ -1,4 +1,6 @@
 import styled from 'styled-components';
+import { styled as styledMUI } from '@mui/material/styles';
+import Button, { ButtonProps } from '@mui/material/Button';
 
 export const Card = styled.div`
 	display: flex;
@@ -10,10 +12,13 @@ export const Card = styled.div`
 
 	border-radius: 6px 36px 6px 36px;
 
-	width: 16rem;
-	height: 20rem;
+	max-width: 16rem;
+	max-height: 20rem;
+
+	object-fit: contain;
 
 	background-color: ${(props) => props.theme['base-card']};
+	box-shadow: rgba(0, 0, 0, 0.05) 0px 0px 0px 1px;
 
 	.coffeImg {
 		width: 7.5rem;
@@ -46,6 +51,9 @@ export const InfosContainer = styled.div`
 	align-items: center;
 	gap: 0.5rem;
 
+	position: relative;
+	top: -2rem;
+
 	h3 {
 		font-weight: 700;
 		font-size: 20px;
@@ -62,9 +70,13 @@ export const InfosContainer = styled.div`
 
 export const ValuesContainer = styled.div`
 	display: flex;
+	flex-direction: column;
 	justify-content: space-between;
 	align-items: center;
-	gap: 1rem;
+
+	position: relative;
+	top: -1rem;
+	left: 1rem;
 
 	strong {
 		font-size: 1.5rem;
@@ -117,4 +129,21 @@ export const ValuesContainer = styled.div`
 	.buy:hover {
 		background-color: ${(props) => props.theme.purple};
 	}
+`;
+
+export const ColorButton = styledMUI(Button)`
+	min-width: 25px;
+	width: 40px;
+	margin: 0;
+	padding; 0
+`;
+
+export const NumberCount = styled.span`
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	background-color: ${(props) => props.theme['base-button']};
+	box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
+	padding: 2px 16px;
+	border-radius: 4px;
 `;
