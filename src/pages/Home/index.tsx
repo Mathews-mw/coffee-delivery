@@ -1,13 +1,20 @@
-import { ShoppingCart, Timer, Package, Coffee } from 'phosphor-react';
-import { useCallback, useEffect, useState } from 'react';
-import coverImage from '../../assets/Imagem.svg';
-import { CoffeCard } from '../../components/CoffeCard';
 import { api } from '../../services/axios/api';
+import { CoffeCard } from '../../components/CoffeCard';
+import { useCallback, useEffect, useState } from 'react';
+
+import CircularProgress from '@mui/material/CircularProgress';
+
+import coverImage from '../../assets/Imagem.svg';
+import { ShoppingCart, Timer, Package, Coffee } from 'phosphor-react';
+
 import { CoffeList, HeadContainer, HomeContainer, Icon, Main } from './styles';
 
 export function Home() {
 	const [products, setProducts] = useState<IProduct[]>();
 	const [tags, setTags] = useState<ITag[]>();
+	const [loading, setLoading] = useState(true);
+
+	console.log(!!products?.length);
 
 	const fetchProducts = useCallback(async () => {
 		const response = await api.get('/products');
@@ -18,7 +25,9 @@ export function Home() {
 	}, []);
 
 	useEffect(() => {
+		setLoading(true);
 		fetchProducts();
+		setLoading(false);
 	}, [fetchProducts]);
 
 	return (
@@ -67,21 +76,25 @@ export function Home() {
 			<Main>
 				<h1>Nossos cafés</h1>
 
-				<CoffeList>
-					{products?.map((product) => {
-						return (
-							<CoffeCard
-								key={product.id}
-								id={product.id}
-								product_name={product.product_name}
-								price={product.price}
-								description={product.description}
-								image_name={product.image_name}
-								tags={tags && tags.filter((tag) => tag.uuid_ref_product === product.uuid_ref_tag)}
-							/>
-						);
-					})}
-				</CoffeList>
+				{!products?.length ? (
+					<CircularProgress size={68} />
+				) : (
+					<CoffeList>
+						{products?.map((product) => {
+							return (
+								<CoffeCard
+									key={product.id}
+									id={product.id}
+									product_name={product.product_name}
+									price={product.price}
+									description={product.description}
+									image_name={product.image_name}
+									tags={tags && tags.filter((tag) => tag.uuid_ref_product === product.uuid_ref_tag)}
+								/>
+							);
+						})}
+					</CoffeList>
+				)}
 			</Main>
 		</HomeContainer>
 	);

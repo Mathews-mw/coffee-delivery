@@ -21,13 +21,21 @@ interface IProps {
 }
 
 export function Ordered({ id, imageName, itemName, price, amount }: IProps) {
-	const { removeWishFromList, incrementAmount } = useContext(OrderContext);
+	const { removeWishFromList, incrementAmount, wishList } = useContext(OrderContext);
 
-	console.log('amount here: ', amount);
+	const wishSelect = wishList.find((wish) => wish.id === id);
 
 	function handleDeleteWish(id: number) {
 		removeWishFromList(id);
 	}
+
+	function handleIncrementAmount() {
+		incrementAmount(id, +1);
+	}
+
+	useEffect(() => {
+		console.log('amount here: ', wishSelect.amount);
+	}, [handleIncrementAmount]);
 
 	return (
 		<Container>
@@ -47,9 +55,9 @@ export function Ordered({ id, imageName, itemName, price, amount }: IProps) {
 								<Plus weight='fill' size={14} color='#8047F8' />
 							</Button>
 							<Button aria-readonly disableTouchRipple sx={{ cursor: 'default' }}>
-								{amount}
+								{wishSelect.amount}
 							</Button>
-							<Button onClick={() => incrementAmount(id, -1)}>
+							<Button onClick={() => incrementAmount(id, -1)} disabled={amount >= 2 ? false : true}>
 								<Minus weight='fill' size={14} color='#8047F8' />
 							</Button>
 						</ButtonGroup>

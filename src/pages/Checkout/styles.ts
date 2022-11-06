@@ -1,4 +1,9 @@
 import styled from 'styled-components';
+import { styled as styledMUI } from '@mui/material/styles';
+
+import FormControlLabel from '@mui/material/FormControlLabel';
+import RadioGroup from '@mui/material/RadioGroup';
+import Radio from '@mui/material/Radio';
 
 export const CheckoutContainer = styled.div``;
 
@@ -136,5 +141,40 @@ export const Scroll = styled.div`
 		background: ${(props) => props.theme['purple-light']};
 		border-radius: 100rem;
 		cursor: pointer;
+	}
+`;
+
+export const RadioGroupCustom = styledMUI(RadioGroup)`
+	display: flex;
+	flex-direction: row;
+	flex-wrap: nowrap;
+	width: 100%;
+	justify-content: space-between;
+	gap: 0.5rem; 
+`;
+
+export const RadioCustom = styledMUI(Radio)`
+`;
+
+export const FormControlLabelCustom = styledMUI(FormControlLabel)`
+	display: flex;
+	justify-content: center;
+	align-items: center;	
+	width: '12.5rem';
+	height: '3.2rem';
+	padding: 0.5rem;
+	border-radius: 6px;
+	box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 1px 3px 1px;
+
+	span {
+		font-size: 12px;
+	}
+	
+	&:hover {
+		box-shadow: rgba(0, 0, 0, 0.07) 0px 1px 2px, rgba(0, 0, 0, 0.07) 0px 2px 4px, rgba(0, 0, 0, 0.07) 0px 4px 8px, rgba(0, 0, 0, 0.07) 0px 8px 16px, rgba(0, 0, 0, 0.07) 0px 16px 32px, rgba(0, 0, 0, 0.07) 0px 32px 64px;
+	}
+
+	&[data-state:checked] {
+		background: red
 	}
 `;

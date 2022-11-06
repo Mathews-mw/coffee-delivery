@@ -1,106 +1,98 @@
-import { useCallback, useEffect, useState, useRef } from 'react';
 import { api } from '../../services/axios/api';
-import { EnhancedTable } from '../../components/TableDemo/index';
+import DataTable, { TableColumn } from 'react-data-table-component';
+import { useCallback, useEffect, useState, useRef, useContext } from 'react';
 
-import Button from '@mui/material/Button';
-import ButtonGroup from '@mui/material/ButtonGroup';
-import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
-import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
-import TablePagination from '@mui/material/TablePagination';
+import CircularProgress from '@mui/material/CircularProgress';
 
 import { ContentContainer, ControlContainer, HeaderTitle } from './styles';
+import { ShowErrorRequest } from '../../utils/ShowErrorRequest';
+import { useNavigate } from 'react-router-dom';
+import { AuthContext } from '../../contexts/AuthContext';
 
 export function Control() {
+	const { user } = useContext(AuthContext);
+
+	const navigate = useNavigate();
+
+	const [loading, setLoading] = useState(true);
 	const [products, setProducts] = useState<IProduct[]>();
-	const [page, setPage] = useState(0);
-	const [totalPages, setTotalpages] = useState(0);
-	const [rowsPerPage, setRowsPerPage] = useState(10);
-	const [totalContent, setTotalContent] = useState(1);
-	const ref = useRef(0);
-	console.log('ref: ', ref);
 
-	console.log(products);
-	console.log('page: ', page);
-	console.log('rowsPerPage:  ', rowsPerPage);
-	console.log(totalContent);
-	console.log('totalPages: ', totalPages);
-	console.log('currentPage: ', page);
-
-	const fetchProductsData = useCallback(async (pagesAmmount: number, currentPage: number) => {
+	const fetchProductsData = useCallback(async () => {
 		try {
-			const response = await api.get('/products/paginate', {
-				params: {
-					pagesAmmount: pagesAmmount,
-					currentPage: currentPage,
-				},
-			});
+			setLoading(true);
+			const response = await api.get('/products');
 			const data = await response.data;
 
-			setProducts(data.content);
-			setPage(data.currentPage);
-			setTotalContent(data.totalContent);
-			setTotalpages(data.totalPages);
+			setProducts(data);
+			setLoading(false);
 		} catch (error) {
-			console.log(error);
+			setLoading(false);
+			ShowErrorRequest(error);
+			navigate('/');
 		}
 	}, []);
 
 	useEffect(() => {
-		fetchProductsData(rowsPerPage, ref.current);
-	}, [fetchProductsData, rowsPerPage, ref.current]);
+		if (user) {
+			fetchProductsData();
+		}
+	}, [user]);
 
-	const handleChangePage = (event: unknown, newPage: number) => {
-		setPage(newPage);
-		ref.current = newPage;
-	};
-
-	const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
-		setRowsPerPage(parseInt(event.target.value, 10));
-		setPage(0);
-	};
+	const columns: TableColumn<IProduct>[] = [
+		{
+			name: 'Nome',
+			cell: (row) => row.product_name,
+			selector: (row) => row.product_name,
+			sortable: true,
+		},
+		{
+			name: 'Preço',
+			cell: (row) => row.price,
+			selector: (row) => row.price,
+			sortable: true,
+		},
+		{
+			name: 'Descrição',
+			cell: (row) => row.description,
+			grow: 4,
+		},
+		{
+			name: 'Imagem',
+			cell: (row) => {
+				return <img className='coffeImg' src={`http://localhost:3838/files/productsImages/${row.image_name}`} alt={row.image_name} style={{ width: '4rem', padding: '0.5rem 0' }} />;
+			},
+		},
+	];
 
 	return (
 		<ControlContainer>
 			<HeaderTitle>
-				<h1>Control</h1>
+				<h1>Controle de produtos</h1>
 			</HeaderTitle>
 
 			<ContentContainer>
-				<table>
-					<thead>
-						<tr>
-							<th>Nome</th>
-							<th>Preço</th>
-							<th>Descrição</th>
-							<th>Imagem</th>
-						</tr>
-					</thead>
-					<tbody>
-						{products?.map((product) => {
-							return (
-								<tr key={product.id}>
-									<td>{product.product_name}</td>
-									<td>R$ {product.price}</td>
-									<td>{product.description}</td>
-									<td>
-										<img className='coffeImg' src={`http://localhost:3838/files/productsImages/${product.image_name}`} alt={product.image_name} />
-									</td>
-								</tr>
-							);
-						})}
-					</tbody>
-				</table>
-				<TablePagination
-					rowsPerPageOptions={[5, 10, 25]}
-					component='div'
-					count={totalContent}
-					rowsPerPage={rowsPerPage}
-					page={page}
-					onPageChange={handleChangePage}
-					onRowsPerPageChange={handleChangeRowsPerPage}
+				<DataTable<IProduct>
+					columns={columns}
+					data={products}
+					responsive
+					persistTableHead
+					pagination
+					striped
+					pointerOnHover
+					highlightOnHover
+					progressPending={loading}
+					progressComponent={<CircularProgress size={68} />}
+					onRowClicked={(row) => alert(row.product_name)}
+					noHeader={true}
+					noDataComponent={<span style={{ margin: 40 }}>Nenhum registro foi encontrado</span>}
+					paginationComponentOptions={{
+						rowsPerPageText: 'Linhas por página',
+						rangeSeparatorText: 'de',
+						selectAllRowsItem: true,
+						selectAllRowsItemText: 'Todos',
+					}}
 				/>
 			</ContentContainer>
-			<EnhancedTable />
 		</ControlContainer>
 	);
 }

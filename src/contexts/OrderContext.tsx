@@ -1,4 +1,4 @@
-import React, { createContext, useState } from 'react';
+import React, { createContext, Dispatch, SetStateAction, useState } from 'react';
 
 interface IWish {
 	id: number;
@@ -10,15 +10,18 @@ interface IWish {
 
 interface OrderContextType {
 	wishList: IWish[];
-	addNewOrder: (id: number, product_name: string, price: number, amount: number, image_name: string) => void;
+	setWishList: Dispatch<SetStateAction<IWish[]>>;
 	removeWishFromList: (id: number) => void;
 	incrementAmount: (id: number, increment: number) => void;
+	addNewOrder: (id: number, product_name: string, price: number, amount: number, image_name: string) => void;
 }
 
 export const OrderContext = createContext({} as OrderContextType);
 
 export function OrderContextProvider({ children }: { children: React.ReactNode }) {
 	const [wishList, setWishList] = useState<IWish[]>([]);
+
+	console.log('wishList: ', wishList);
 
 	function addNewOrder(id: number, product_name: string, price: number, amount: number, image_name: string) {
 		const wish = {
@@ -43,12 +46,15 @@ export function OrderContextProvider({ children }: { children: React.ReactNode }
 	}
 
 	function incrementAmount(id: number, increment: number) {
-		const wish = wishList.find((wish) => wish.id === id);
-		wish.amount += increment;
-
-		console.log(wishList);
-		console.log('this specific wish: ', wish);
+		setWishList((state) =>
+			state.map((wish) => {
+				if (wish.id === id) {
+					wish.amount += increment;
+				}
+				return wish;
+			})
+		);
 	}
 
-	return <OrderContext.Provider value={{ wishList, addNewOrder, removeWishFromList, incrementAmount }}>{children}</OrderContext.Provider>;
+	return <OrderContext.Provider value={{ wishList, setWishList, addNewOrder, removeWishFromList, incrementAmount }}>{children}</OrderContext.Provider>;
 }

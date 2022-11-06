@@ -6,6 +6,7 @@ interface IProduct {
 	price: number;
 	description: string;
 	image_name: string;
+	created_at: Date;
 	updated_at: Date;
 	uuid_ref_tag: string;
 }

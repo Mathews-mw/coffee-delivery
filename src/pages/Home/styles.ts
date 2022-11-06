@@ -61,8 +61,7 @@ export const Icon = styled.span<IconProps>`
 	width: 2rem;
 	height: 2rem;
 	border-radius: 999px;
-	background: ${(props) =>
-		props.theme[BACKGROUND_COLORS[props.backgroundColor]]};
+	background: ${(props) => props.theme[BACKGROUND_COLORS[props.backgroundColor]]};
 
 	svg {
 		color: ${(props) => props.theme.white};
@@ -82,4 +81,5 @@ export const CoffeList = styled.div`
 	display: flex;
 	flex-wrap: wrap;
 	gap: 2rem;
+	margin-bottom: 1rem;
 `;
