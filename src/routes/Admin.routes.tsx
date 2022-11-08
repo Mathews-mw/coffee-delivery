@@ -1,10 +1,11 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
-import { AdminLayout } from '../layouts/AdminLayout';
-import { Checkout } from '../pages/Checkout';
-import { Control } from '../pages/Control';
+
 import { Home } from '../pages/Home';
-import { ProductsRegister } from '../pages/ProductsRegister';
 import { Sucess } from '../pages/Sucess';
+import { Control } from '../pages/Control';
+import { Checkout } from '../pages/Checkout';
+import { AdminLayout } from '../layouts/AdminLayout';
+import { EditProduct, RegisterProduct } from '../pages/Products';
 
 export function AdminRoutes() {
 	return (
@@ -12,7 +13,8 @@ export function AdminRoutes() {
 			<Route path='/' element={<AdminLayout />}>
 				<Route path='/' element={<Home />} />
 				<Route path='checkout' element={<Checkout />} />
-				<Route path='productsregister' element={<ProductsRegister />} />
+				<Route path='product/register' element={<RegisterProduct />} />
+				<Route path='product/edit/:ID' element={<EditProduct />} />
 				<Route path='sucess' element={<Sucess />} />
 				<Route path='control' element={<Control />} />
 				<Route path='*' element={<Navigate to='/' />} />

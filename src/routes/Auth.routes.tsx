@@ -1,9 +1,10 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
-import { AuthLayout } from '../layouts/AuthLayout';
-import { DefaultLayout } from '../layouts/DefaultLayout';
+
 import { Home } from '../pages/Home';
 import { Login } from '../pages/Login';
 import { Register } from '../pages/UserRegister';
+import { AuthLayout } from '../layouts/AuthLayout';
+import { DefaultLayout } from '../layouts/DefaultLayout';
 
 export function AuthRoutes() {
 	return (

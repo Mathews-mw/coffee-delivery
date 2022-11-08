@@ -11,6 +11,18 @@ interface IProduct {
 	uuid_ref_tag: string;
 }
 
+interface IProductView {
+	id: number;
+	product_name: string;
+	price: number;
+	description: string;
+	image_name: string;
+	tags: string[];
+	uuid_ref_tag: string;
+	created_at: Date;
+	updated_at?: Date;
+}
+
 interface ITag {
 	id: number;
 	tag: string;

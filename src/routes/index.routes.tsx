@@ -5,12 +5,12 @@ import { AuthLayout } from '../layouts/AuthLayout';
 import { DefaultLayout } from '../layouts/DefaultLayout';
 import { Home } from '../pages/Home';
 import { Checkout } from '../pages/Checkout';
-import { Sucess } from '../pages/Sucess';
-import { useContext, useEffect } from 'react';
-import { AuthContext } from '../contexts/AuthContext';
-import { AuthRoutes } from './Auth.routes';
+import { useContext } from 'react';
+
 import { UserRoutes } from './User.routes';
+import { AuthRoutes } from './Auth.routes';
 import { AdminRoutes } from './Admin.routes';
+import { AuthContext } from '../contexts/AuthContext';
 
 export function Router() {
 	const { isSigned, isAdmin, loading } = useContext(AuthContext);

@@ -1,13 +1,14 @@
-import { api } from '../../services/axios/api';
+import { useNavigate } from 'react-router-dom';
 import DataTable, { TableColumn } from 'react-data-table-component';
-import { useCallback, useEffect, useState, useRef, useContext } from 'react';
+import { useCallback, useEffect, useState, useContext } from 'react';
+
+import { api } from '../../services/axios/api';
+import { AuthContext } from '../../contexts/AuthContext';
+import { ShowErrorRequest } from '../../utils/ShowErrorRequest';
 
 import CircularProgress from '@mui/material/CircularProgress';
 
 import { ContentContainer, ControlContainer, HeaderTitle } from './styles';
-import { ShowErrorRequest } from '../../utils/ShowErrorRequest';
-import { useNavigate } from 'react-router-dom';
-import { AuthContext } from '../../contexts/AuthContext';
 
 export function Control() {
 	const { user } = useContext(AuthContext);
@@ -82,7 +83,7 @@ export function Control() {
 					highlightOnHover
 					progressPending={loading}
 					progressComponent={<CircularProgress size={68} />}
-					onRowClicked={(row) => alert(row.product_name)}
+					onRowClicked={(row) => navigate(`/product/edit/${row.id}`)}
 					noHeader={true}
 					noDataComponent={<span style={{ margin: 40 }}>Nenhum registro foi encontrado</span>}
 					paginationComponentOptions={{

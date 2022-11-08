@@ -1,25 +1,27 @@
-import { useEffect, useState } from 'react';
-import { api } from '../../services/axios/api';
-import { ShowErrorRequest } from '../../utils/ShowErrorRequest';
-import { useForm, Controller } from 'react-hook-form';
 import * as yup from 'yup';
-import { yupResolver } from '@hookform/resolvers/yup';
 import { v4 as uuidV4 } from 'uuid';
-import { InputText } from '../../components/InputText';
-import { Tag, FilePng, Image } from 'phosphor-react';
-import { Theme, useTheme } from '@mui/material/styles';
 import { toast } from 'react-toastify';
+import { useForm } from 'react-hook-form';
+import { useEffect, useState } from 'react';
+import { yupResolver } from '@hookform/resolvers/yup';
 
-import Select, { SelectChangeEvent } from '@mui/material/Select';
-import Divider from '@mui/material/Divider';
-import Button from '@mui/material/Button';
+import { api } from '../../../services/axios/api';
+import { InputText } from '../../../components/InputText';
+import { ShowErrorRequest } from '../../../utils/ShowErrorRequest';
+
 import Box from '@mui/material/Box';
-import OutlinedInput from '@mui/material/OutlinedInput';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
 import Chip from '@mui/material/Chip';
+import Button from '@mui/material/Button';
+import Divider from '@mui/material/Divider';
+import MenuItem from '@mui/material/MenuItem';
 import TextField from '@mui/material/TextField';
+import InputLabel from '@mui/material/InputLabel';
+import FormControl from '@mui/material/FormControl';
+import { Theme, useTheme } from '@mui/material/styles';
+import OutlinedInput from '@mui/material/OutlinedInput';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
+
+import { Tag, FilePng, Image } from 'phosphor-react';
 
 import { ProductsRegContainer, ProductsRegCard, TagsSelect, ProductImageCard, HeaderGroup, HeaderTitle, Form } from './styles';
 
@@ -58,11 +60,12 @@ const ProductsSchema = yup.object({
 
 type InputForm = yup.InferType<typeof ProductsSchema>;
 
-export function ProductsRegister() {
+export function Register() {
 	const theme = useTheme();
-	const [personName, setPersonName] = useState<string[]>([]);
-	const [imageDisplay, setImageDisplay] = useState<any>('');
+
 	const [imageName, setImageName] = useState<any>();
+	const [imageDisplay, setImageDisplay] = useState<any>('');
+	const [personName, setPersonName] = useState<string[]>([]);
 
 	const { register, handleSubmit, watch, reset } = useForm<InputForm>({
 		resolver: yupResolver(ProductsSchema),
