@@ -15,7 +15,7 @@ export function AdminRoutes() {
 				<Route path='checkout' element={<Checkout />} />
 				<Route path='product/register' element={<RegisterProduct />} />
 				<Route path='product/edit/:ID' element={<EditProduct />} />
-				<Route path='sucess' element={<Sucess />} />
+				<Route path='/sucess/:ID' element={<Sucess />} />
 				<Route path='control' element={<Control />} />
 				<Route path='*' element={<Navigate to='/' />} />
 			</Route>

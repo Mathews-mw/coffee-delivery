@@ -1,5 +1,5 @@
+import { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useContext, useRef, useState } from 'react';
 
 import axios from 'axios';
 import * as yup from 'yup';
@@ -12,7 +12,6 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm, Controller } from 'react-hook-form';
 import { InputText } from '../../components/InputText';
 import { priceFormatter } from '../../utils/formatter';
-import { AuthContext } from '../../contexts/AuthContext';
 import { OrderContext } from '../../contexts/OrderContext';
 
 import Stack from '@mui/material/Stack';
@@ -21,7 +20,20 @@ import CircularProgress from '@mui/material/CircularProgress';
 
 import { MapPinLine, CurrencyDollar, CreditCard, Bank, Money, CheckCircle, Check } from 'phosphor-react';
 
-import { HeaderTitle, Form, CheckoutContainer, DeliveryCard, PaymentCard, ProductsCard, HeaderGroup, OrderList, Scroll, RadioGroupCustom, RadioCustom, FormControlLabelCustom } from './styles';
+import {
+	HeaderTitle,
+	Form,
+	CheckoutContainer,
+	DeliveryCard,
+	PaymentCard,
+	ProductsCard,
+	HeaderGroup,
+	OrderList,
+	Scroll,
+	RadioGroupCustom,
+	RadioCustom,
+	FormControlLabelCustom,
+} from './styles';
 
 enum PaymantEnum {
 	CreditCard = 'creditCard',
@@ -44,14 +56,12 @@ type FormInputs = yup.InferType<typeof newCheckoutSchema>;
 
 export function Checkout() {
 	const navigate = useNavigate();
-	const { wishList, setWishList } = useContext(OrderContext);
 
-	console.log('wishlist: ', wishList);
+	const { wishList, setWishList, handleConfirmedOrder } = useContext(OrderContext);
 
 	const [address, setAddress] = useState<ICEPRequest>();
 	const [loading, setLoading] = useState(false);
 	const [success, setSuccess] = useState(false);
-	const timer = useRef<number>();
 
 	const totalCart = wishList.reduce((total, element) => {
 		return (total += element.price * element.amount);
@@ -99,16 +109,20 @@ export function Checkout() {
 				total_order: totalOrder,
 			});
 
+			const { message, order } = await response.data;
+
+			handleConfirmedOrder(order);
+
 			setSuccess(true);
 			setLoading(false);
 			reset();
 			setWishList([]);
 
-			ShowSuccessRequest(response.data);
+			ShowSuccessRequest(message);
 
 			setTimeout(() => {
-				navigate('/sucess');
-			}, 4000);
+				navigate(`/sucess/${order.id}`);
+			}, 1000);
 		} catch (error) {
 			ShowErrorRequest(error);
 			setLoading(false);
@@ -150,8 +164,24 @@ export function Checkout() {
 						<InputText mask='' type='text' label='Complemento' placeholder='Opcional' containerStyle={{ flex: 3.5 }} {...register('complemento')} />
 					</div>
 					<div className='cityGroup'>
-						<InputText mask='' type='text' label='Bairro' defaultValue={address?.bairro} containerStyle={{ flex: 4 }} {...register('bairro')} error={errors.bairro?.message} />
-						<InputText mask='' type='text' label='Cidade' defaultValue={address?.localidade} containerStyle={{ flex: 3 }} {...register('cidade')} error={errors.cidade?.message} />
+						<InputText
+							mask=''
+							type='text'
+							label='Bairro'
+							defaultValue={address?.bairro}
+							containerStyle={{ flex: 4 }}
+							{...register('bairro')}
+							error={errors.bairro?.message}
+						/>
+						<InputText
+							mask=''
+							type='text'
+							label='Cidade'
+							defaultValue={address?.localidade}
+							containerStyle={{ flex: 3 }}
+							{...register('cidade')}
+							error={errors.cidade?.message}
+						/>
 						<InputText mask='' type='text' label='UF' defaultValue={address?.uf} {...register('uf')} error={errors.uf?.message} />
 					</div>
 				</DeliveryCard>
@@ -177,7 +207,9 @@ export function Checkout() {
 										sx={{ width: '12.5rem', height: '3.2rem' }}
 										value='creditCard'
 										label='CARTÃO DE CRÉDITO'
-										control={<RadioCustom color='success' icon={<CreditCard size={22} color='#8047F8' />} checkedIcon={<CheckCircle size={22} weight='fill' />} />}
+										control={
+											<RadioCustom color='success' icon={<CreditCard size={22} color='#8047F8' />} checkedIcon={<CheckCircle size={22} weight='fill' />} />
+										}
 									/>
 									<FormControlLabelCustom
 										sx={{ width: '12.5rem', height: '3.2rem' }}
@@ -203,7 +235,9 @@ export function Checkout() {
 							<Stack spacing={3}>
 								{wishList.length > 0 &&
 									wishList.map((wish) => {
-										return <Ordered key={wish.id} id={wish.id} itemName={wish.product_name} price={wish.price} amount={wish.amount} imageName={wish.image_name} />;
+										return (
+											<Ordered key={wish.id} id={wish.id} itemName={wish.product_name} price={wish.price} amount={wish.amount} imageName={wish.image_name} />
+										);
 									})}
 							</Stack>
 						</OrderList>
@@ -227,8 +261,7 @@ export function Checkout() {
 					</Stack>
 
 					<Button variant='contained' size='large' type='submit' sx={{ gap: 2 }} color={success ? 'success' : 'primary'} disabled={isSubmitting}>
-						{success ? <Check size={32} weight='fill' /> : 'CONFIRMAR PEDIDO'}
-						{loading && <CircularProgress color='success' size={32} />}
+						{loading ? <CircularProgress color='success' size={32} /> : success ? <Check size={32} /> : 'CONFIRMAR PEDIDO'}
 					</Button>
 				</ProductsCard>
 			</Form>

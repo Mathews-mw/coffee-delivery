@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-export const ProductsRegContainer = styled.div``;
+export const ProductsRegContainer = styled.main``;
 
 export const HeaderTitle = styled.header`
 	margin: 2.5rem 0 1rem;
@@ -10,12 +10,14 @@ export const HeaderTitle = styled.header`
 	}
 `;
 
-export const Form = styled.form`
+export const MainContent = styled.div`
 	display: grid;
 	grid-template-areas: 'MAIN ASIDE';
 	grid-template-columns: 1fr 20rem;
 	gap: 2rem;
 `;
+
+export const Form = styled.form``;
 
 export const ProductsRegCard = styled.main`
 	display: flex;
@@ -41,6 +43,11 @@ export const ProductsRegCard = styled.main`
 		display: flex;
 		flex-wrap: wrap;
 		gap: 1rem;
+	}
+
+	.buttonsGroup {
+		display: flex;
+		justify-content: space-between;
 	}
 `;
 

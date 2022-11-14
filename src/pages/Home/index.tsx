@@ -14,8 +14,6 @@ export function Home() {
 	const [tags, setTags] = useState<ITag[]>();
 	const [loading, setLoading] = useState(true);
 
-	console.log(!!products?.length);
-
 	const fetchProducts = useCallback(async () => {
 		const response = await api.get('/products');
 		const tagsResponse = await api.get('/products/tags');

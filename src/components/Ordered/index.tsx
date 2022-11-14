@@ -33,10 +33,6 @@ export function Ordered({ id, imageName, itemName, price, amount }: IProps) {
 		incrementAmount(id, +1);
 	}
 
-	useEffect(() => {
-		console.log('amount here: ', wishSelect.amount);
-	}, [handleIncrementAmount]);
-
 	return (
 		<Container>
 			<CheckoutItem>
@@ -62,7 +58,13 @@ export function Ordered({ id, imageName, itemName, price, amount }: IProps) {
 							</Button>
 						</ButtonGroup>
 
-						<Button variant='contained' color='inherit' size='small' startIcon={<Trash weight='fill' size={18} color='#8047F8' />} onClick={() => handleDeleteWish(id)}>
+						<Button
+							variant='contained'
+							color='inherit'
+							size='small'
+							startIcon={<Trash weight='fill' size={18} color='#8047F8' />}
+							onClick={() => handleDeleteWish(id)}
+						>
 							Remover
 						</Button>
 					</Stack>

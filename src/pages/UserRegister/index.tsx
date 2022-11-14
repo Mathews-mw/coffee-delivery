@@ -62,7 +62,6 @@ export function Register() {
 				confirm_password: confirm_password,
 				avatar: avatar,
 			};
-			console.log(newUser);
 			await api.post('/users', newUser);
 
 			toast('Usuário criado com Sucesso!', {
@@ -130,10 +129,13 @@ export function Register() {
 					<DialogContent>
 						<DialogContentText id='alert-dialog-description'>
 							<Typography gutterBottom align='left'>
-								Como vocês está se registrando agora, só é possível referenciar uma imagem para seu perfil através de algum link de alguma foto sua já existente na Web. Por exemplo:
+								Como vocês está se registrando agora, só é possível referenciar uma imagem para seu perfil através de algum link de alguma foto sua já existente
+								na Web. Por exemplo:
 								<i>(https://avatars.githubusercontent.com/u/97031798?v=4).</i> Qualquer link válido irá servir para ser sua foto de perfil.
 							</Typography>
-							<Typography gutterBottom>Após concluir seu cadastro, você pode editar seu perfil e então subir uma imagem para usar como foto de perfil.</Typography>
+							<Typography gutterBottom>
+								Após concluir seu cadastro, você pode editar seu perfil e então subir uma imagem para usar como foto de perfil.
+							</Typography>
 							<Typography gutterBottom>
 								<InputText mask='' type='link' label='Link para foto de perfil' {...register('avatar')} />
 							</Typography>
