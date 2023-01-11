@@ -19,20 +19,21 @@ interface ICoffeCardProps {
 	description: string;
 	tags: ITag[] | undefined;
 	image_name: string;
+	imageUrl: string;
 }
 
-export function CoffeCard({ id, product_name, price, description, tags, image_name }: ICoffeCardProps) {
+export function CoffeCard({ id, product_name, price, description, tags, image_name, imageUrl }: ICoffeCardProps) {
 	const { addNewOrder, wishList } = useContext(OrderContext);
 
 	const [amount, setAmount] = useState(0);
 
-	function handleNewOrder(id: number, product_name: string, price: number, amount: number, image_name: string) {
-		addNewOrder(id, product_name, price, amount, image_name);
+	function handleNewOrder(id: number, product_name: string, price: number, amount: number, image_name: string, imageUrl: string) {
+		addNewOrder(id, product_name, price, amount, image_name, imageUrl);
 	}
 
 	return (
 		<Card>
-			<img className='coffeImg' src={`http://localhost:3838/files/productsImages/${image_name}`} alt={product_name} />
+			<img className='coffeImg' src={imageUrl} alt={product_name} />
 
 			<div className='group'>
 				<InfosContainer>
@@ -64,7 +65,7 @@ export function CoffeCard({ id, product_name, price, description, tags, image_na
 							</Button>
 						</ButtonGroup>
 
-						<IconButton aria-label='Adicionar' color='secondary' onClick={() => handleNewOrder(id, product_name, price, amount, image_name)} disabled={amount >= 1 ? false : true}>
+						<IconButton aria-label='Adicionar' color='secondary' onClick={() => handleNewOrder(id, product_name, price, amount, image_name, imageUrl)} disabled={amount >= 1 ? false : true}>
 							<ShoppingCartSimple weight='fill' size={26} />
 						</IconButton>
 					</Stack>

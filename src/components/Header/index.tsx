@@ -1,10 +1,10 @@
 import axios from 'axios';
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { AuthContext } from '../../contexts/AuthContext';
 import { OrderContext } from '../../contexts/OrderContext';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 
-import { InputText } from '../InputText';
+import { InputText } from '../Form/InputText';
 import { BackgroundLetterAvatars } from '../BackgroundLetterAvatars';
 
 import Menu from '@mui/material/Menu';
@@ -26,6 +26,9 @@ import { House, MapPin, ShoppingCart, Gear, SignOut, Storefront, ListDashes, Sig
 
 import Logo from '../../assets/Logo.svg';
 import { Cart, HeaderContainer, Location, Home, Frame } from './styles';
+import Box from '@mui/material/Box/Box';
+import { CanSee } from '../CanSee';
+import { usePermissions } from '../../hooks/usePermissions';
 
 interface IAdress {
 	cep: string;
@@ -40,12 +43,16 @@ export function Header() {
 	const navigate = useNavigate();
 
 	const { wishList } = useContext(OrderContext);
-	const { signOut, user } = useContext(AuthContext);
+	const { signOut, user, isSigned } = useContext(AuthContext);
 
-	const [adress, setAdress] = useState<IAdress>();
-	const [imageProfile, setImageProfile] = useState(true);
+	const userPermissions = user?.permissions.map((permission) => {
+		return permission.value;
+	});
+
 	const [inputCep, setInputCep] = useState('');
+	const [adress, setAdress] = useState<IAdress>();
 	const [openModal, setOpenModal] = useState(false);
+	const [imageProfile, setImageProfile] = useState(true);
 	const [openAlertModal, setOpenAlertModal] = useState(false);
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
@@ -73,29 +80,42 @@ export function Header() {
 
 	const handleClickAlertModalClose = () => {
 		setOpenAlertModal(false);
-		navigate('authenticate/login');
+		navigate('/authenticate/login');
 	};
 
 	async function fetchLocal() {
 		const response = await axios.get(`https://viacep.com.br/ws/${inputCep}/json/`);
 		const { cep, logradouro, complemento, bairro, localidade, uf } = response.data;
 
-		setAdress({
+		const userAdrress = {
 			cep,
 			logradouro,
 			complemento,
 			bairro,
 			localidade,
 			uf,
-		});
+		};
 
+		const localeToString = JSON.stringify(userAdrress);
+		sessionStorage.setItem(import.meta.env.VITE_APP_USER_LOCALE, localeToString);
+
+		setAdress(userAdrress);
 		setOpenModal(false);
 	}
 
-	function handleSetLogOut() {
+	function handleSignOut() {
 		signOut();
-		navigate('authenticate/login');
+		navigate('/authenticate');
 	}
+
+	useEffect(() => {
+		const userLocaleSession = sessionStorage.getItem(import.meta.env.VITE_APP_USER_LOCALE);
+
+		if (userLocaleSession) {
+			var parseUserLocaleObjct = JSON.parse(userLocaleSession);
+			setAdress(parseUserLocaleObjct);
+		}
+	}, []);
 
 	return (
 		<HeaderContainer>
@@ -130,27 +150,31 @@ export function Header() {
 						)}
 					</Tooltip>
 
-					<Tooltip title='Registro de produtos'>
-						<NavLink to='/product/register'>
-							<Cart>
-								<Storefront weight='fill' size={24} />
-							</Cart>
-						</NavLink>
-					</Tooltip>
+					<CanSee permissions={userPermissions}>
+						<Tooltip title='Registro de produtos'>
+							<NavLink to='/product/register'>
+								<Cart>
+									<Storefront weight='fill' size={24} />
+								</Cart>
+							</NavLink>
+						</Tooltip>
+					</CanSee>
 
-					<Tooltip title='Controle de produtos'>
-						<NavLink to='/control'>
-							<Cart>
-								<ListDashes weight='fill' size={24} />
-							</Cart>
-						</NavLink>
-					</Tooltip>
+					<CanSee permissions={userPermissions}>
+						<Tooltip title='Controle de produtos'>
+							<NavLink to='/control'>
+								<Cart>
+									<ListDashes weight='fill' size={24} />
+								</Cart>
+							</NavLink>
+						</Tooltip>
+					</CanSee>
 
-					<Tooltip title='Gerenciar conta'>
+					<Tooltip title={isSigned ? `Olá, ${user?.name}` : 'Gerencie sua conta'}>
 						<IconButton onClick={handleClick} size='small' sx={{ ml: 2 }} aria-controls={open ? 'account-menu' : undefined} aria-haspopup='true' aria-expanded={open ? 'true' : undefined}>
 							{imageProfile ? (
 								<Frame>
-									<Avatar alt='Mathews' src={user?.avatar} variant='rounded' sx={{ width: 44, height: 44 }} />
+									<Avatar alt={user?.name} src={user?.avatar_url} variant='rounded' sx={{ width: 44, height: 44 }} />
 								</Frame>
 							) : (
 								<Frame>
@@ -194,16 +218,17 @@ export function Header() {
 						transformOrigin={{ horizontal: 'right', vertical: 'top' }}
 						anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
 					>
-						<MenuItem>
-							<Link to='/authenticate/login'>
-								<ListItemIcon>
-									<SignIn size={20} />
-								</ListItemIcon>
-							</Link>
-							Login
-						</MenuItem>
-						{!!user && (
-							<>
+						{!user ? (
+							<MenuItem>
+								<Link to='/authenticate/login'>
+									<ListItemIcon>
+										<SignIn size={20} />
+									</ListItemIcon>
+									Login
+								</Link>
+							</MenuItem>
+						) : (
+							<Stack>
 								<MenuItem>
 									<ListItemIcon>
 										<Gear size={20} />
@@ -211,14 +236,11 @@ export function Header() {
 									Configurações
 								</MenuItem>
 								<MenuItem>
-									<ListItemIcon>
-										<IconButton onClick={handleSetLogOut}>
-											<SignOut size={20} />
-										</IconButton>
-									</ListItemIcon>
-									Sair
+									<Button startIcon={<SignOut size={20} />} onClick={handleSignOut}>
+										<ListItemIcon>Sair</ListItemIcon>
+									</Button>
 								</MenuItem>
-							</>
+							</Stack>
 						)}
 					</Menu>
 

@@ -1,12 +1,13 @@
 import * as yup from 'yup';
 import { v4 as uuidV4 } from 'uuid';
 import { toast } from 'react-toastify';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import { useEffect, useState } from 'react';
 import { yupResolver } from '@hookform/resolvers/yup';
+import CurrencyInput, { CurrencyInputProps } from 'react-currency-input-field';
 
-import { api } from '../../../services/axios/api';
-import { InputText } from '../../../components/InputText';
+import { api } from '../../../services/apiClient';
+import { InputText } from '../../../components/Form/InputText';
 import { ShowErrorRequest } from '../../../utils/ShowErrorRequest';
 
 import Box from '@mui/material/Box';
@@ -24,6 +25,7 @@ import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { Tag, FilePng, Image } from 'phosphor-react';
 
 import { ProductsRegContainer, ProductsRegCard, TagsSelect, ProductImageCard, HeaderGroup, HeaderTitle, Form } from './styles';
+import { CurrencyInputField } from '../../../components/Form/CurrencyInput';
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -51,7 +53,7 @@ const ProductsSchema = yup.object({
 	description: yup.string().required('Campo obrigatório'),
 	product_img: yup
 		.mixed()
-		.required()
+		.required('Insira uma imagem para o produto')
 		.test('fileVerifyMin', 'Campo obrigatório', (value) => value.length > 0)
 		.test('fileVerifyMax', 'Quatidade máxima de arquivos permitidos 1', (value) => value.length < 2)
 		.test('fileFormat', 'Formato não permitido', (value) => value[0] && ['png', 'jpeg', 'svg'].includes(value[0].name.split('.').slice(-1)[0]))
@@ -67,7 +69,15 @@ export function Register() {
 	const [imageDisplay, setImageDisplay] = useState<any>('');
 	const [personName, setPersonName] = useState<string[]>([]);
 
-	const { register, handleSubmit, watch, reset } = useForm<InputForm>({
+	const {
+		register,
+		handleSubmit,
+		watch,
+		reset,
+		control,
+		setValue,
+		formState: { errors },
+	} = useForm<InputForm>({
 		resolver: yupResolver(ProductsSchema),
 	});
 
@@ -166,6 +176,7 @@ export function Register() {
 								{...register('tags')}
 								value={personName}
 								onChange={handleChange}
+								error={!!errors?.tags}
 								input={<OutlinedInput id='select-multiple-chip' label='Chip' />}
 								renderValue={(selected) => (
 									<Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
@@ -185,8 +196,18 @@ export function Register() {
 						</FormControl>
 					</TagsSelect>
 
-					<InputText mask='99,99' type='text' label='Preço' defaultValue={'00,00'} containerStyle={{ width: '50%' }} {...register('price')} />
-					<TextField label='Descrição' id='Description' multiline rows={4} variant='outlined' placeholder='Insira alguma descrição para o produto...' {...register('description')} />
+					<InputText mask='99,99' type='text' label='Preço' placeholder='99,99' currency='R$' containerStyle={{ width: '30%' }} {...register('price')} error={errors.price?.message.toString()} />
+
+					<TextField
+						label='Descrição'
+						id='Description'
+						multiline
+						rows={4}
+						variant='outlined'
+						placeholder='Insira alguma descrição para o produto...'
+						{...register('description')}
+						error={!!errors?.description}
+					/>
 
 					<div>
 						<Button variant='contained' type='submit'>
@@ -221,6 +242,12 @@ export function Register() {
 							Upload
 							<input hidden accept='image/*' type='file' {...register('product_img')} />
 						</Button>
+
+						{!!errors.product_img && (
+							<div className='imgUploadError'>
+								<small>*Insira uma imagem para o produto</small>
+							</div>
+						)}
 					</div>
 				</ProductImageCard>
 			</Form>

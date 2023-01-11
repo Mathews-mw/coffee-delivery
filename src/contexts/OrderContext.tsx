@@ -6,6 +6,7 @@ interface IWish {
 	price: number;
 	amount: number;
 	image_name: string;
+	imageUrl: string;
 }
 
 interface OrderContextType {
@@ -14,7 +15,7 @@ interface OrderContextType {
 	confirmedOrder: IOrderView;
 	removeWishFromList: (id: number) => void;
 	incrementAmount: (id: number, increment: number) => void;
-	addNewOrder: (id: number, product_name: string, price: number, amount: number, image_name: string) => void;
+	addNewOrder: (id: number, product_name: string, price: number, amount: number, image_name: string, imageUrl: string) => void;
 	handleConfirmedOrder: (data: IOrderView) => void;
 }
 
@@ -28,16 +29,17 @@ export function OrderContextProvider({ children }: { children: React.ReactNode }
 		setConfirmedOrder(data);
 	}
 
-	function addNewOrder(id: number, product_name: string, price: number, amount: number, image_name: string) {
+	function addNewOrder(id: number, product_name: string, price: number, amount: number, image_name: string, imageUrl: string) {
 		const wish = {
 			id,
 			product_name,
 			price,
 			amount,
 			image_name,
+			imageUrl,
 		};
 
-		setWishList((state) => [{ id, product_name, price, amount, image_name }, ...state]);
+		setWishList((state) => [{ id, product_name, price, amount, image_name, imageUrl }, ...state]);
 	}
 
 	function removeWishFromList(id: number) {
@@ -58,9 +60,5 @@ export function OrderContextProvider({ children }: { children: React.ReactNode }
 		);
 	}
 
-	return (
-		<OrderContext.Provider value={{ wishList, confirmedOrder, setWishList, addNewOrder, removeWishFromList, handleConfirmedOrder, incrementAmount }}>
-			{children}
-		</OrderContext.Provider>
-	);
+	return <OrderContext.Provider value={{ wishList, confirmedOrder, setWishList, addNewOrder, removeWishFromList, handleConfirmedOrder, incrementAmount }}>{children}</OrderContext.Provider>;
 }

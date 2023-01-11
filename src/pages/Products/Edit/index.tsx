@@ -4,8 +4,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
-import { api } from '../../../services/axios/api';
-import { InputText } from '../../../components/InputText';
+import { InputText } from '../../../components/Form/InputText';
 import { ShowErrorRequest } from '../../../utils/ShowErrorRequest';
 import { ShowSuccessRequest } from '../../../utils/ShowSuccessRequest';
 
@@ -33,6 +32,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogActions from '@mui/material/DialogActions';
+import { api } from '../../../services/apiClient';
 
 function getStyles(name: string, personName: readonly string[], theme: Theme) {
 	return {

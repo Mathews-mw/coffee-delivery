@@ -2,7 +2,6 @@ import { useContext, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import { OrderContext } from '../../contexts/OrderContext';
-import { ShowErrorRequest } from '../../utils/ShowErrorRequest';
 
 import Backdrop from '@mui/material/Backdrop';
 import CircularProgress from '@mui/material/CircularProgress';
@@ -18,6 +17,25 @@ export function Sucess() {
 	const { confirmedOrder } = useContext(OrderContext);
 
 	const [loading, setLoading] = useState(false);
+
+	let paymentType: string;
+
+	if (confirmedOrder) {
+		switch (confirmedOrder.payment) {
+			case 'creditCard':
+				paymentType = 'Cartão de crédito';
+				break;
+			case 'debitCard':
+				paymentType = 'Cartão de débito';
+				break;
+			case 'cash':
+				paymentType = 'Dinheiro';
+				break;
+			default:
+				paymentType = 'Não informado';
+				break;
+		}
+	}
 
 	return (
 		<SucessContainer>
@@ -63,7 +81,7 @@ export function Sucess() {
 							</Icon>
 							<p>
 								Pagamento na entrega:
-								<strong>{confirmedOrder.payment}</strong>
+								<strong>{paymentType}</strong>
 							</p>
 						</div>
 					</div>

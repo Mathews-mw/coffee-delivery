@@ -2,11 +2,12 @@ import { useContext, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
-import { InputText } from '../../components/InputText';
+import { InputText } from '../../components/Form/InputText';
 import { Link, Navigate } from 'react-router-dom';
 import { AuthContext } from '../../contexts/AuthContext';
 
 import { Form, LoginCard, LoginContainer, ButtonsGroup, ColorButton } from './styles';
+import { ShowErrorRequest } from '../../utils/ShowErrorRequest';
 
 const loginFormSchema = Yup.object({
 	email: Yup.string().required('Campo obrigatório'),
@@ -30,10 +31,9 @@ export function Login() {
 
 	async function handleLoginSubmit(data: loginFormInputs) {
 		try {
-			await signIn(data.email, data.password, setLoading);
+			await signIn(data.email, data.password);
 		} catch (error) {
 			setLoading(false);
-			reset();
 		}
 	}
 

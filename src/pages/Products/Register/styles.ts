@@ -114,4 +114,12 @@ export const ProductImageCard = styled.div`
 	img {
 		width: 10rem;
 	}
+
+	.imgUploadError {
+		margin-top: 0.5rem;
+
+		small {
+			color: ${(props) => props.theme['red-300']};
+		}
+	}
 `;

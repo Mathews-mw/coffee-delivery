@@ -6,10 +6,28 @@ export const HeaderContainer = styled.header`
 	justify-content: space-between;
 	align-items: center;
 
-	a {
-		display: flex;
-		align-items: center;
-		justify-content: center;
+	nav {
+		a {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+		}
+
+		a:link {
+			text-decoration: none;
+		}
+
+		a:visited {
+			text-decoration: none;
+		}
+
+		a:hover {
+			text-decoration: underline;
+		}
+
+		a:active {
+			text-decoration: underline;
+		}
 	}
 `;
 

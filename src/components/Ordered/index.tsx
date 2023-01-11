@@ -15,12 +15,13 @@ import ButtonGroup from '@mui/material/ButtonGroup';
 interface IProps {
 	id: number;
 	imageName: string;
+	imageUrl: string;
 	itemName: string;
 	amount: number;
 	price: number;
 }
 
-export function Ordered({ id, imageName, itemName, price, amount }: IProps) {
+export function Ordered({ id, imageName, itemName, price, amount, imageUrl }: IProps) {
 	const { removeWishFromList, incrementAmount, wishList } = useContext(OrderContext);
 
 	const wishSelect = wishList.find((wish) => wish.id === id);
@@ -36,7 +37,7 @@ export function Ordered({ id, imageName, itemName, price, amount }: IProps) {
 	return (
 		<Container>
 			<CheckoutItem>
-				<img src={`http://localhost:3838/files/productsImages/${imageName}`} alt='Imagem do produto' width={24} height={64} />
+				<img src={imageUrl} alt='Imagem do produto' width={24} height={64} />
 
 				<Stack spacing={1}>
 					<div className='uperRow'>
@@ -58,13 +59,7 @@ export function Ordered({ id, imageName, itemName, price, amount }: IProps) {
 							</Button>
 						</ButtonGroup>
 
-						<Button
-							variant='contained'
-							color='inherit'
-							size='small'
-							startIcon={<Trash weight='fill' size={18} color='#8047F8' />}
-							onClick={() => handleDeleteWish(id)}
-						>
+						<Button variant='contained' color='inherit' size='small' startIcon={<Trash weight='fill' size={18} color='#8047F8' />} onClick={() => handleDeleteWish(id)}>
 							Remover
 						</Button>
 					</Stack>

@@ -1,27 +1,34 @@
-import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
-import { yupResolver } from '@hookform/resolvers/yup';
-import { api } from '../../services/axios/api';
+import { useState } from 'react';
 import { toast } from 'react-toastify';
+import { Link, useNavigate } from 'react-router-dom';
+import { cpf } from 'cpf-cnpj-validator';
+import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+
+import { api } from '../../services/apiClient';
+import { InputText } from '../../components/Form/InputText';
 import { ShowErrorRequest } from '../../utils/ShowErrorRequest';
+import { ShowSuccessRequest } from '../../utils/ShowSuccessRequest';
+
+import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
+import Typography from '@mui/material/Typography';
 import DialogTitle from '@mui/material/DialogTitle';
+import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
-import DialogActions from '@mui/material/DialogActions';
-import Typography from '@mui/material/Typography';
-import Button from '@mui/material/Button';
-import { InputText } from '../../components/InputText';
-import { useState } from 'react';
 
-import { RegisterCard, RegisterContainer, Form, ButtonsGroup, ColorButton } from './styles';
-import { Link } from 'react-router-dom';
 import { UserPlus } from 'phosphor-react';
+import { RegisterCard, RegisterContainer, Form, ButtonsGroup, ColorButton } from './styles';
 
 const registerFormSchema = yup.object({
 	name: yup.string().required('Campo obrigatório!'),
 	email: yup.string().email().required('Campo obrigatório!'),
-	cpf: yup.string().required('Campo obrigatório!'),
+	cpf: yup
+		.string()
+		.required('Campo obrigatório!')
+		.test('validateCPF', 'CPF inválido', (value) => cpf.isValid(value || '')),
 	phone: yup.string().required('Campo obrigatório!'),
 	password: yup.string().required('Campo obrigatório!').min(8, 'Sua senha precisa ter no mínimo 8 dígitos'),
 	confirm_password: yup.string().required('Campo obrigatório!'),
@@ -34,11 +41,15 @@ export function Register() {
 	const {
 		register,
 		handleSubmit,
+		reset,
 		formState: { errors },
 	} = useForm<RegisterFormInputs>({
 		resolver: yupResolver(registerFormSchema),
 	});
 
+	const navigate = useNavigate();
+
+	const [loadingActions, setLoadingActions] = useState(false);
 	const [open, setOpen] = useState(false);
 
 	const handleClickOpen = () => {
@@ -53,24 +64,24 @@ export function Register() {
 		const { name, email, cpf, password, confirm_password, phone, avatar } = data;
 
 		try {
-			const newUser = {
-				name: name,
-				email: email,
-				cpf: cpf,
-				phone_number: phone,
-				password: password,
-				confirm_password: confirm_password,
-				avatar: avatar,
-			};
-			await api.post('/users', newUser);
+			setLoadingActions(true);
 
-			toast('Usuário criado com Sucesso!', {
-				autoClose: 4000,
-				type: 'success',
-				draggable: true,
-				theme: 'light',
-				position: 'bottom-right',
-			});
+			const newUser = {
+				name,
+				email,
+				cpf,
+				phone_number: phone,
+				password,
+				confirm_password,
+				avatar,
+			};
+			const { data: dataResult } = await api.post('/users', newUser);
+
+			setLoadingActions(false);
+			ShowSuccessRequest(data);
+			reset();
+
+			navigate('/authenticate/login');
 		} catch (error) {
 			ShowErrorRequest(error);
 		}
@@ -79,7 +90,7 @@ export function Register() {
 	function onError() {
 		toast('Preencha os campos obrigatórios', {
 			autoClose: 3000,
-			type: 'error',
+			type: 'warning',
 			draggable: true,
 			theme: 'dark',
 			position: 'bottom-right',
@@ -129,13 +140,10 @@ export function Register() {
 					<DialogContent>
 						<DialogContentText id='alert-dialog-description'>
 							<Typography gutterBottom align='left'>
-								Como vocês está se registrando agora, só é possível referenciar uma imagem para seu perfil através de algum link de alguma foto sua já existente
-								na Web. Por exemplo:
+								Como vocês está se registrando agora, só é possível referenciar uma imagem para seu perfil através de algum link de alguma foto sua já existente na Web. Por exemplo:
 								<i>(https://avatars.githubusercontent.com/u/97031798?v=4).</i> Qualquer link válido irá servir para ser sua foto de perfil.
 							</Typography>
-							<Typography gutterBottom>
-								Após concluir seu cadastro, você pode editar seu perfil e então subir uma imagem para usar como foto de perfil.
-							</Typography>
+							<Typography gutterBottom>Após concluir seu cadastro, você pode editar seu perfil e então subir uma imagem para usar como foto de perfil.</Typography>
 							<Typography gutterBottom>
 								<InputText mask='' type='link' label='Link para foto de perfil' {...register('avatar')} />
 							</Typography>

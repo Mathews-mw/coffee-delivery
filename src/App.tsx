@@ -1,6 +1,6 @@
+import theme from './styles/themes/theme';
 import 'react-toastify/dist/ReactToastify.css';
 
-import theme from './styles/themes/theme';
 import { ToastContainer } from 'react-toastify';
 import { BrowserRouter } from 'react-router-dom';
 import { ThemeProvider } from 'styled-components';
@@ -22,12 +22,13 @@ function App() {
 						<OrderContextProvider>
 							<Router />
 						</OrderContextProvider>
-						<ToastContainer />
 					</AuthContextProvider>
 				</BrowserRouter>
+				<ToastContainer />
 			</ThemeProviderMUI>
 		</ThemeProvider>
 	);
 }
 
 export default App;
+

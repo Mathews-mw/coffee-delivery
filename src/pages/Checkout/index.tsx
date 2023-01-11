@@ -1,16 +1,16 @@
 import { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { api } from '../../services/apiClient';
 
 import axios from 'axios';
 import * as yup from 'yup';
-import { api } from '../../services/axios/api';
 import { ShowErrorRequest } from '../../utils/ShowErrorRequest';
 import { ShowSuccessRequest } from '../../utils/ShowSuccessRequest';
 
 import { Ordered } from '../../components/Ordered';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm, Controller } from 'react-hook-form';
-import { InputText } from '../../components/InputText';
+import { InputText } from '../../components/Form/InputText';
 import { priceFormatter } from '../../utils/formatter';
 import { OrderContext } from '../../contexts/OrderContext';
 
@@ -20,20 +20,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 
 import { MapPinLine, CurrencyDollar, CreditCard, Bank, Money, CheckCircle, Check } from 'phosphor-react';
 
-import {
-	HeaderTitle,
-	Form,
-	CheckoutContainer,
-	DeliveryCard,
-	PaymentCard,
-	ProductsCard,
-	HeaderGroup,
-	OrderList,
-	Scroll,
-	RadioGroupCustom,
-	RadioCustom,
-	FormControlLabelCustom,
-} from './styles';
+import { HeaderTitle, Form, CheckoutContainer, DeliveryCard, PaymentCard, ProductsCard, HeaderGroup, OrderList, Scroll, RadioGroupCustom, RadioCustom, FormControlLabelCustom } from './styles';
 
 enum PaymantEnum {
 	CreditCard = 'creditCard',
@@ -164,24 +151,8 @@ export function Checkout() {
 						<InputText mask='' type='text' label='Complemento' placeholder='Opcional' containerStyle={{ flex: 3.5 }} {...register('complemento')} />
 					</div>
 					<div className='cityGroup'>
-						<InputText
-							mask=''
-							type='text'
-							label='Bairro'
-							defaultValue={address?.bairro}
-							containerStyle={{ flex: 4 }}
-							{...register('bairro')}
-							error={errors.bairro?.message}
-						/>
-						<InputText
-							mask=''
-							type='text'
-							label='Cidade'
-							defaultValue={address?.localidade}
-							containerStyle={{ flex: 3 }}
-							{...register('cidade')}
-							error={errors.cidade?.message}
-						/>
+						<InputText mask='' type='text' label='Bairro' defaultValue={address?.bairro} containerStyle={{ flex: 4 }} {...register('bairro')} error={errors.bairro?.message} />
+						<InputText mask='' type='text' label='Cidade' defaultValue={address?.localidade} containerStyle={{ flex: 3 }} {...register('cidade')} error={errors.cidade?.message} />
 						<InputText mask='' type='text' label='UF' defaultValue={address?.uf} {...register('uf')} error={errors.uf?.message} />
 					</div>
 				</DeliveryCard>
@@ -207,9 +178,7 @@ export function Checkout() {
 										sx={{ width: '12.5rem', height: '3.2rem' }}
 										value='creditCard'
 										label='CARTÃO DE CRÉDITO'
-										control={
-											<RadioCustom color='success' icon={<CreditCard size={22} color='#8047F8' />} checkedIcon={<CheckCircle size={22} weight='fill' />} />
-										}
+										control={<RadioCustom color='success' icon={<CreditCard size={22} color='#8047F8' />} checkedIcon={<CheckCircle size={22} weight='fill' />} />}
 									/>
 									<FormControlLabelCustom
 										sx={{ width: '12.5rem', height: '3.2rem' }}
@@ -235,9 +204,7 @@ export function Checkout() {
 							<Stack spacing={3}>
 								{wishList.length > 0 &&
 									wishList.map((wish) => {
-										return (
-											<Ordered key={wish.id} id={wish.id} itemName={wish.product_name} price={wish.price} amount={wish.amount} imageName={wish.image_name} />
-										);
+										return <Ordered key={wish.id} id={wish.id} itemName={wish.product_name} price={wish.price} amount={wish.amount} imageName={wish.image_name} imageUrl={wish.imageUrl} />;
 									})}
 							</Stack>
 						</OrderList>

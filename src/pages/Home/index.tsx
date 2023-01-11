@@ -1,4 +1,3 @@
-import { api } from '../../services/axios/api';
 import { CoffeCard } from '../../components/CoffeCard';
 import { useCallback, useEffect, useState } from 'react';
 
@@ -8,6 +7,7 @@ import coverImage from '../../assets/Imagem.svg';
 import { ShoppingCart, Timer, Package, Coffee } from 'phosphor-react';
 
 import { CoffeList, HeadContainer, HomeContainer, Icon, Main } from './styles';
+import { api } from '../../services/apiClient';
 
 export function Home() {
 	const [products, setProducts] = useState<IProduct[]>();
@@ -87,6 +87,7 @@ export function Home() {
 									price={product.price}
 									description={product.description}
 									image_name={product.image_name}
+									imageUrl={product.image_url}
 									tags={tags && tags.filter((tag) => tag.uuid_ref_product === product.uuid_ref_tag)}
 								/>
 							);

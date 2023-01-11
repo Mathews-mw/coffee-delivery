@@ -2,13 +2,13 @@ import { useNavigate } from 'react-router-dom';
 import DataTable, { TableColumn } from 'react-data-table-component';
 import { useCallback, useEffect, useState, useContext } from 'react';
 
-import { api } from '../../services/axios/api';
 import { AuthContext } from '../../contexts/AuthContext';
 import { ShowErrorRequest } from '../../utils/ShowErrorRequest';
 
 import CircularProgress from '@mui/material/CircularProgress';
 
 import { ContentContainer, ControlContainer, HeaderTitle } from './styles';
+import { api } from '../../services/apiClient';
 
 export function Control() {
 	const { user } = useContext(AuthContext);
@@ -60,7 +60,7 @@ export function Control() {
 		{
 			name: 'Imagem',
 			cell: (row) => {
-				return <img className='coffeImg' src={`http://localhost:3838/files/productsImages/${row.image_name}`} alt={row.image_name} style={{ width: '4rem', padding: '0.5rem 0' }} />;
+				return <img className='coffeImg' src={row.image_url} alt={row.image_name} style={{ width: '4rem', padding: '0.5rem 0' }} />;
 			},
 		},
 	];
