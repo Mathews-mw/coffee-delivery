@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import { OrderContext } from '../../contexts/OrderContext';
@@ -8,12 +8,10 @@ import CircularProgress from '@mui/material/CircularProgress';
 
 import { MapPin, CurrencyDollar, Timer } from 'phosphor-react';
 
-import SucessIlustration from '../../assets/illustration.png';
+import SucessIlustration from '../../../public/illustration.png';
 import { Card, Content, Header, Icon, ImageContainer, SucessContainer } from './styles';
 
 export function Sucess() {
-	const { ID } = useParams();
-	const navigate = useNavigate();
 	const { confirmedOrder } = useContext(OrderContext);
 
 	const [loading, setLoading] = useState(false);
