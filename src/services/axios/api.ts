@@ -12,7 +12,8 @@ let failedRequestsQueue = [];
 
 export function setupAPIClient() {
 	const api = axios.create({
-		baseURL: 'http://localhost:3838',
+		baseURL: 'https://coffee-delivery-api.mattdevtests.com',
+    // baseURL: `${import.meta.env.VITE_APP_BASE_API_URL}`,
 		headers: {
 			Authorization: `Bearer ${cookies[import.meta.env.VITE_APP_TOKEN_KEY]}`,
 		},
